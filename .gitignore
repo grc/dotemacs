@@ -1,4 +1,11 @@
-# Compiled
 *.elc
+*~
 auto-save*
+bbdb
+bookmarks
+eshell
+.mc-lists.el
+.org-id-locations
+snippets
+tramp
 url/
