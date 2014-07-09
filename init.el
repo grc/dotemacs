@@ -276,11 +276,15 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 ;;; Load in other config
 
-(load "mail-config")
-(load "bbdb-config")
-(load "org-config")
-(load "erc-config")
-(load "prog-config")
+(setq config-dir "~/.emacs.d")
+(setq configs '( "mail-config"
+                 "bbdb-config"
+                 "org-config"
+                 "erc-config"
+                 "prog-config"))
+
+(mapc (lambda (file) (print (load "%s/%s" config-dir file))) configs)
+
 
 ;;; Move customisations to their own file
 (setq custom-file "~/.emacs.d/custom.el")
