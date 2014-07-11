@@ -1,5 +1,7 @@
 ;;; ERC
 ;; Note that this is now developed wthin emacs, not the Savannah repository
+
+(message "loading erc config")
 (require 'erc)
 (add-hook 'erc-mode-hook 'flyspell-mode)
 (add-hook 'erc-mode-hook 'abbrev-mode)

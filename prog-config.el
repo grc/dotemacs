@@ -79,4 +79,4 @@
 
 ;; puppet
 (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
-(auto-load 'puppet-mode "puppet-mode")
+(autoload 'puppet-mode "puppet-mode")

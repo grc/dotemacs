@@ -283,7 +283,10 @@ This is the same as using \\[set-mark-command] with the prefix argument."
                  "erc-config"
                  "prog-config"))
 
-(mapc (lambda (file) (print (load "%s/%s" config-dir file))) configs)
+(mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
+                       (message (format "loading %s" config))
+                       (load config))) configs)
+
 
 
 ;;; Move customisations to their own file
