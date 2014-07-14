@@ -45,6 +45,12 @@
 (require 'eldoc)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
+
+(require 'elisp-slime-nav)
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook 'elisp-slime-nav-mode))
+
+
 ;;; Lisp
 
 (setq inferior-lisp-program "sbcl")
@@ -88,3 +94,5 @@
 (eval-after-load 'sh-script
   '(progn
      (define-key sh-mode-map "\C-c?" nil)))
+
+
