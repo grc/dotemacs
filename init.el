@@ -1,3 +1,6 @@
+;;; init.el --- Emacs init file
+;;; Code:
+
 (server-start)
 
 ;;; Set up my load path
@@ -25,7 +28,7 @@
 
 ;;; yasnippet
 (require 'yasnippet)
-(yas-global-mode 1)
+;(yas-global-mode 1)
 
 
 
@@ -298,3 +301,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 
 
+
+
+
+;;; init.el ends here
