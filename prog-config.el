@@ -80,3 +80,11 @@
 ;; puppet
 (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
 (autoload 'puppet-mode "puppet-mode")
+
+
+;;; Shell script mode
+;; I use C-c ? for magit-status, but shell mode binds it sh-show-indent,
+
+(eval-after-load 'sh-script
+  '(progn
+     (define-key sh-mode-map "\C-c?" nil)))
