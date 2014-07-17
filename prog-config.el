@@ -15,10 +15,11 @@
 
 
 
-
-(require 'clojure-mode)
-(add-hook 'clojure-mode-hook 'show-paren-mode)
-(add-hook 'slime-repl-mode-hook 'show-paren-mode)
+(when (locate-library "clojure-mode")
+  (autoload  'clojure-mode "clojure-mode")
+  (eval-after-load 'clojure-mode
+    (progn '((add-hook 'clojure-mode-hook 'show-paren-mode)
+             (add-hook 'slime-repl-mode-hook 'show-paren-mode)))))
 
 
 ;;; Javascript
@@ -63,33 +64,34 @@
 	emacs-lisp-mode-hook
 	ielm-mode-hook))
 
-(autoload 'paredit-mode "paredit"
-  "Turn on pseudo-structural editing of Lisp code."
-  t)
+(when (locate-library "paredit")
+  (autoload 'paredit-mode "paredit"
+    "Turn on pseudo-structural editing of Lisp code."
+    t)
 
-; By default paredit-splice-sexp is bount to M-s which stomps on a lot
-; of useful key bindings, so fix that.  Similarly the `\' behaviour is
-; weird.
-(eval-after-load 'paredit
-  '(progn 
-     (define-key paredit-mode-map "\M-s" nil) 
-     (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
-     (define-key paredit-mode-map "\\" nil)))
-
-
-
-;; Python stuff
+  ;; By default paredit-splice-sexp is bount to M-s which stomps on a lot
+  ;; of useful key bindings, so fix that.  Similarly the `\' behaviour is
+  ;; weird.
+  (eval-after-load 'paredit
+    '(progn 
+       (define-key paredit-mode-map "\M-s" nil) 
+       (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
+       (define-key paredit-mode-map "\\" nil))))
 
 (require 'python)
 (setq python-check-command "epylint")
 
 ;; puppet
-(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
-(autoload 'puppet-mode "puppet-mode")
+(when (locate-library "puppet-mode")
+  (autoload 'puppet-mode "puppet-mode")
+  (eval-after-load 'puppet-mode
+    '(progn 
+      (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))))
+
 
 
 ;;; Shell script mode
-;; I use C-c ? for magit-status, but shell mode binds it sh-show-indent,
+  ;; I use C-c ? for magit-status, but shell mode binds it sh-show-inden
 
 (eval-after-load 'sh-script
   '(progn

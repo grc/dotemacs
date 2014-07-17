@@ -49,6 +49,26 @@
 
 (add-hook 'text-mode-hook 'grc-text-hook)
 
+;;; Spelling correction
+(define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word'. Then create an abbrev for the correction made.
+With prefix P, create local abbrev. Otherwise it will be global."
+  (interactive "P")
+  (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+    (call-interactively 'ispell-word)
+    (setq aft (downcase (or (thing-at-point 'word) "")))
+    (unless (string= aft bef)
+      (message "\"%s\" now expands to \"%s\" %sally"
+               bef aft (if p "loc" "glob"))
+      (define-abbrev
+        (if p local-abbrev-table global-abbrev-table)
+        bef aft))))
+
+(setq save-abbrevs t)
+(setq-default abbrev-mode t)
+
 
 ;;; AucTex
 (message "Initialising AucTeX")
@@ -267,12 +287,39 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (popwin-mode 1)
 
 
+
+;;; Spelling correction
+(define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word'. Then create an abbrev for the correction made.
+With prefix P, create local abbrev. Otherwise it will be global."
+  (interactive "P")
+  (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+    (call-interactively 'ispell-word)
+    (setq aft (downcase (or (thing-at-point 'word) "")))
+    (unless (string= aft bef)
+      (message "\"%s\" now expands to \"%s\" %sally"
+               bef aft (if p "loc" "glob"))
+      (define-abbrev
+        (if p local-abbrev-table global-abbrev-table)
+        bef aft))))
+
+(setq save-abbrevs t)
+(setq-default abbrev-mode t)
+
 ;;;; Pexip MCU functionality
 
 (require 'pexip)
 (defconst pexip-production "10.47.2.49"
   "Address of management node of production MCU")
 (global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
+
+
+
+
+
+
 
 
 
@@ -289,6 +336,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
                        (message (format "loading %s" config))
                        (load config))) configs)
+
 
 
 
