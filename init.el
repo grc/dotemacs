@@ -71,15 +71,16 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 ;;; AucTex
+;;; tex-site takes care of setting up the autolaods so don't
+;;; directly load auctex.el
 (message "Initialising AucTeX")
 (add-to-list 'load-path "/opt/local/share/emacs/site-lisp")
 (require 'tex-site)
 (setq-default TeX-PDF-mode t)
-(load "auctex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
-
+(message "Finished with AucTeX")
 
 
 ; Mark support in the presence of transient mark mode
@@ -307,6 +308,11 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 (setq save-abbrevs t)
 (setq-default abbrev-mode t)
+
+
+;;; Use Symbola font for any vharacters not found in my default font:
+(set-fontset-font "fontset-default" nil 
+                  (font-spec :size 20 :name "Symbola"))
 
 ;;;; Pexip MCU functionality
 
