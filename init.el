@@ -310,9 +310,22 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (setq-default abbrev-mode t)
 
 
-;;; Use Symbola font for any vharacters not found in my default font:
+;;; Use Symbola font for any characters not found in my default font:
 (set-fontset-font "fontset-default" nil 
                   (font-spec :size 20 :name "Symbola"))
+
+
+
+
+
+
+
+;;; Using an Apple magic mouse I'm occasionally generating unwanted
+;;; mouse events which confuse emacs:
+(dolist (k '([mouse-6] [down-mouse-6] [drag-mouse-6] [double-mouse-6] [triple-mouse-6]
+             [mouse-7] [down-mouse-7] [drag-mouse-7] [double-mouse-7] [triple-mouse-7]))
+  (global-unset-key k))
+
 
 ;;;; Pexip MCU functionality
 
