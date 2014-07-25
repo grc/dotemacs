@@ -20,7 +20,7 @@
 (eval-after-load 'org
   '(progn 
     
-
+     (setq org-agenda-span 'day)
      (setq org-use-sub-superscripts nil)
 
      ;; Capture template
