@@ -27,12 +27,15 @@
      (setq org-capture-templates
            '(("t" "Scheduled task" entry
               (file "")
-              "\n\n** TODO %^{Title?}\nSCHEDULED: <%<%Y-%m-%d %a>>\n%?"
+              "\n\n** TODO %^{Title?}\nSCHEDULED: <%<%Y-%m-%d %a>>\nContext: %a\n%?"
               :Empty-lines 1)
              ("n" "Note" entry
               (file "")
               "\n\n**  %?\n"
               :Empty-lines 1)
+             ("d" "Dev notes" entry
+              (file "~/org/devnotes.org"
+                    "\n\n* %^{Title}\n%?"))
              ("w" "" entry ;; 'w' for 'org-protocol'
               (file+headline "www.org" "Notes")
               "* %^{Title}\n\n  Source: %u, %c\n\n  %i")))
