@@ -17,7 +17,10 @@
 (set-mouse-color "white")
 
 
-
+;;; zsh, my normal default, deosn't work at all nicely in emacs'
+;;; shell: completion menu isn't displayed, right hand prompt fails
+;;; etc. Use something more conservative if using M-x shell:
+(setq explicit-shell-file-name "/bin/bash")
 
 
 (defalias 'yes-or-no-p 'y-or-n-p)
