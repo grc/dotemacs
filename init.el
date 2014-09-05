@@ -1,6 +1,9 @@
 ;;; init.el --- Emacs init file
 ;;; Code:
 
+
+
+
 (server-start)
 
 ;;; Set up my load path
@@ -9,7 +12,10 @@
 (let ((default-directory "~/elisp"))
   (normal-top-level-add-subdirs-to-load-path))
 
-
+;;; email
+;;; Use the latest gnus if available
+(add-to-list 'load-path "~/git-repos/gnus/lisp")
+(add-to-list 'Info-directory-list "~/git-repos/gnus/texi")
 
 (setq-default indent-tabs-mode nil)
 (setq visible-bell t)
@@ -110,6 +116,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (exchange-point-and-mark)
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+
+
 
 
 
@@ -266,11 +274,12 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 
 ;;; Video conferencing support
-(require 'grc-video)
-(setq grc-video-endpoints
-    '(("work-snoopy" . "10.44.1.66")))
 
-(global-set-key "\C-cv" 'grc-bbdb-video-dial)
+;; (require 'grc-video)
+;; (setq grc-video-endpoints
+;;     '(("work-snoopy" . "10.44.1.66")))
+
+;; (global-set-key "\C-cv" 'grc-bbdb-video-dial)
 
 
 
