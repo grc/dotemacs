@@ -62,7 +62,7 @@
 
      (org-babel-do-load-languages
       'org-babel-load-languages
-      '((ditaa . t))) 
+      '((emacs-lisp . t))) 
 
      (setq org-src-preserve-indentation t)
 
@@ -88,12 +88,13 @@
      ;; Set to the name of the file where new notes will be stored
      (setq org-mobile-inbox-for-pull "~/org/flagged.org")
      ;; Set to <your Dropbox root directory>/MobileOrg.
-     (setq org-mobile-directory "~/Dropbox/MobileOrg")
+     (setq org-mobile-directory "/Volumes/dav")
 
      ;; Enable encryption-decryption
-     (setq org-mobile-use-encryption nil)
+     (setq org-mobile-use-encryption t)
+     
 
-
+     
 
 ;;; Org Trello integration
 
@@ -130,3 +131,13 @@
 (defvar grc-org-calendar-update-timer 
        (run-with-timer 1 (* 20 60) 'grc-org-update-calendar )
        "Timer used to reresh org calendar from google calendar.")
+
+;;; Exported projects
+
+(setq org-publish-project-alist
+      '(("jujutsu"
+         :base-directory "~/homers/org-expt/src"
+         :publishing-directory "~/homers/org-expt/website"
+         :publishing-function org-html-publish-to-html
+         :make-index t
+         )))
