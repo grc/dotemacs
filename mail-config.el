@@ -1,6 +1,11 @@
 ;;; mail-config.el
-;;; Emacs cobfiguration of all things email related
-;;; all that is, except gnus.
+;;; Emacs configuration of all things email related
+;;; all that is, except gnus, whose init file is declared below
+
+
+;;; Use the latest gnus if available
+(add-to-list 'load-path "~/git-repos/gnus/lisp")
+(add-to-list 'Info-directory-list "~/git-repos/gnus/texi")
 
 
 (setq user-mail-address "giles@jujutsu.org.uk")

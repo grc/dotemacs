@@ -12,10 +12,6 @@
 (let ((default-directory "~/elisp"))
   (normal-top-level-add-subdirs-to-load-path))
 
-;;; email
-;;; Use the latest gnus if available
-(add-to-list 'load-path "~/git-repos/gnus/lisp")
-(add-to-list 'Info-directory-list "~/git-repos/gnus/texi")
 
 (setq-default indent-tabs-mode nil)
 (setq visible-bell t)
