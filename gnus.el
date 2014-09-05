@@ -1,5 +1,6 @@
 (require 'nnir)
 
+(setq gnus-check-new-newsgroups nil)
 (setq gnus-always-read-dribble-file t)
 (setq gnutls-min-prime-bits 727) 	; back to the gnutls default
 
