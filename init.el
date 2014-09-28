@@ -35,7 +35,10 @@
 (require 'yasnippet)
 ;(yas-global-mode 1)
 
-
+;;; font-lock-mode warning text has an associated help string,
+;;; displayed by default on mouse over. I'd like that echoed in the
+;;; minibuffer.
+(setq help-at-pt-display-when-idle t)
 
 (require 'flyspell)
 (setq ispell-program-name "aspell")
@@ -53,6 +56,8 @@
   (auto-fill-mode 1))
 
 (add-hook 'text-mode-hook 'grc-text-hook)
+
+
 
 ;;; Spelling correction
 (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
