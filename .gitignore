@@ -1,12 +1,13 @@
 *.elc
 *~
+.mc-lists.el
+.org-id-locations
+/org-password.el
 auto-save*
 bbdb
 bookmarks
+elpa/
 eshell
-.mc-lists.el
-.org-id-locations
 snippets
 tramp
 url/
-/org-password.el

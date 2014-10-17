@@ -3,8 +3,13 @@
 
 
 
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
-(server-start)
+
+;;; Use new .el files in preference to older .elc
+(setq load-prefer-newer t)
 
 ;;; Set up my load path
 (add-to-list 'load-path "~/elisp")
@@ -19,9 +24,32 @@
 (set-mouse-color "white")
 
 
-;;; zsh, my normal default, deosn't work at all nicely in emacs'
-;;; shell: completion menu isn't displayed, right hand prompt fails
-;;; etc. Use something more conservative if using M-x shell:
+
+
+
+;;; Move to the 21st Century and adopt package management
+(require 'package)
+(add-to-list 'package-archives
+             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
+;; having trouble installing the basic gnu package so let's disable
+;; the checks
+(setq package-check-signature nil)
+
+
+
+
+
+
+
+
+;;; zsh, my normal default, doesn't work at all nicely in emacs'
+;;; shell: the completion menu isn't displayed, the right hand prompt
+;;; fails etc. Use something more conservative if using M-x shell:
 (setq explicit-shell-file-name "/bin/bash")
 
 
