@@ -33,7 +33,7 @@
              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/") t)
 
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
 ;; having trouble installing the basic gnu package so let's disable

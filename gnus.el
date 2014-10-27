@@ -19,6 +19,13 @@
                                   (nnimap-port 143)
                                   (nnimap-stream network)))
 
+
+(setq gnus-secondary-select-methods
+      '((nnimap "personal"
+                (nnimap-stream ssl)
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993))))
+
 ;; (setq gnus-secondary-select-methods
 ;;    '((nnimap "work"
 ;;            (nnimap-stream ssl)

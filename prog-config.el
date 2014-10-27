@@ -3,6 +3,9 @@
 
 ;;; Rainbow delimiters: colour pmatching pairs of parentheses etc
 ;;; Makes sense to turn this on wherever we have paredit mode enabled
+(global-prettify-symbols-mode 1)
+
+
 (require 'rainbow-delimiters)
 ;;; Colours are a bit too subtle by default so saturate them
 (require 'cl-lib)
@@ -15,11 +18,7 @@
 
 
 
-(when (locate-library "clojure-mode")
-  (autoload  'clojure-mode "clojure-mode")
-  (eval-after-load 'clojure-mode
-    (progn '((add-hook 'clojure-mode-hook 'show-paren-mode)
-             (add-hook 'slime-repl-mode-hook 'show-paren-mode)))))
+
 
 
 ;;; Javascript
@@ -78,7 +77,19 @@
        (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
        (define-key paredit-mode-map "\\" nil))))
 
-(require 'python)
+
+
+
+;;; Clojure
+(unless (package-installed-p 'cider)
+  (package-install 'cider))
+
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+
+
+;;; Python
+(package-initialize)
+(elpy-enable)
 (setq python-check-command "epylint")
 
 ;; puppet
