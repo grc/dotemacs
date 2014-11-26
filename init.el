@@ -193,7 +193,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 ;; Sunrise/Sunset stuff
 (require 'solar)
-(setq calendar-latitude 51.6 calendar-longitude 1.1) ; Warborough, Oxfordshire
+(setq calendar-location-name "Warborough, Oxfordshire")
+(setq calendar-latitude 51.6 calendar-longitude 1.1) 
 
 
 (require 'browse-kill-ring)
@@ -208,10 +209,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 	     '(nil "\\`root\\'" "/ssh:%h:"))
 (add-to-list 'tramp-default-proxies-alist
 	     '((regexp-quote (system-name)) nil nil))
-
-(add-to-list
- 'tramp-default-proxies-alist
- '("nagios-uk" "root" "/ssh:%h:"))
+(add-to-list 'tramp-default-proxies-alist
+             '("nagios-uk" "root" "/ssh:%h:"))
 
 
 
