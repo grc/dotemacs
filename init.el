@@ -376,7 +376,8 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
-
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 
 
