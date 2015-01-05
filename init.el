@@ -108,17 +108,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (setq-default abbrev-mode t)
 
 
-;;; AucTex
-;;; tex-site takes care of setting up the autolaods so don't
-;;; directly load auctex.el
-(message "Initialising AucTeX")
-(add-to-list 'load-path "/opt/local/share/emacs/site-lisp")
-(require 'tex-site)
-(setq-default TeX-PDF-mode t)
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
-(message "Finished with AucTeX")
+
 
 
 ; Mark support in the presence of transient mark mode
@@ -387,10 +377,11 @@ With prefix P, create local abbrev. Otherwise it will be global."
 ;;; Load in other config
 
 (setq config-dir "~/.emacs.d")
-(setq configs '( "mail-config"
+(setq configs '( "auctex-config"
                  "bbdb-config"
-                 "org-config"
                  "erc-config"
+                 "mail-config"
+                 "org-config"
                  "prog-config"))
 
 (mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
