@@ -7,42 +7,17 @@
 (setq gnus-summary-line-format "%U%R%z%d%I%(%[%4L: %-23,23f%]%) %s\n")
 
 
-;; (setq gnus-select-method  '(
-;;                             nnimap "personal"
-;; 				   (nnimap-stream ssl)
-;; 				   (nnimap-address "imap.gmail.com")
-;; 				   (nnimap-server-port 993)))
-
-
 (setq gnus-select-method '(nnimap "worklocal"
                                   (nnimap-address "127.0.0.1")
                                   (nnimap-port 143)
                                   (nnimap-stream network)))
 
-
 (setq gnus-secondary-select-methods
       '((nnimap "personal"
                 (nnimap-stream ssl)
                 (nnimap-address "imap.gmail.com")
-                (nnimap-server-port 993))))
-
-;; (setq gnus-secondary-select-methods
-;;    '((nnimap "work"
-;;            (nnimap-stream ssl)
-;;            (nnimap-address "imap.gmail.com")
-;; 	   (nnimap-server-port 993))
-;;      (nnimap "worklocal"
-;;              (nnimap-address "127.0.0.1")
-;;              (nnimap-port 143)
-;;              (nnimap-stream network))
-;;      (nntp "news.gmane.org")))
-
-;; (setq gnus-secondary-select-methods
-;;       '((nnimap "worklocal"
-;;                 (nnimap-address "127.0.0.1")
-;;                 (nnimap-port 143)
-;;                 (nnimap-stream network))
-;;         (nntp "news.gmane.org")))
+                (nnimap-server-port 993))
+        (nntp "news.gmane.org")))
 
 
 

@@ -88,10 +88,10 @@
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
 
-;;; Python
-(package-initialize)
-(elpy-enable)
-(setq python-check-command "epylint")
+;; ;;; Python
+;; (package-initialize)
+;; (elpy-enable)
+;; (setq python-check-command "epylint")
 
 ;; puppet
 (when (locate-library "puppet-mode")

@@ -1,6 +1,6 @@
 ;;; init.el --- Emacs init file
 ;;; Code:
-
+(setq inhibit-splash-screen t)
 
 
 (require 'server)
@@ -59,9 +59,6 @@
 
 
 
-;;; yasnippet
-(require 'yasnippet)
-;(yas-global-mode 1)
 
 ;;; font-lock-mode warning text has an associated help string,
 ;;; displayed by default on mouse over. I'd like that echoed in the
@@ -382,6 +379,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
                  "erc-config"
                  "mail-config"
                  "org-config"
+                 "org-blog-config"
                  "prog-config"))
 
 (mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
