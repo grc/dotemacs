@@ -44,7 +44,30 @@
 
 
 
+;;; Repeatable command idea taken from abo-abo:
+;;; http://oremacs.com/2015/01/14/repeatable-commands/
 
+(defun def-rep-command (alist)
+  "Return a lambda that calls the first function of ALIST.
+It sets the transient map to all functions of ALIST."
+  (lexical-let ((keymap (make-sparse-keymap))
+                (func (cdar alist)))
+    (mapc (lambda (x)
+            (define-key keymap (car x) (cdr x)))
+          alist)
+    (lambda (arg)
+      (interactive "p")
+      (funcall func arg)
+      (set-transient-map keymap t))))
+
+(global-set-key (kbd "<f2> g")
+                (def-rep-command
+                    '(("g" . text-scale-increase)
+                      ("l" . text-scale-decrease))))
+(global-set-key (kbd "<f2> l")
+                (def-rep-command
+                    '(("l" . text-scale-decrease)
+                      ("g" . text-scale-increase))))
 
 
 ;;; zsh, my normal default, doesn't work at all nicely in emacs'
