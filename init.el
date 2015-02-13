@@ -46,7 +46,7 @@
 
 ;;; Repeatable command idea taken from abo-abo:
 ;;; http://oremacs.com/2015/01/14/repeatable-commands/
-
+(require 'cl)
 (defun def-rep-command (alist)
   "Return a lambda that calls the first function of ALIST.
 It sets the transient map to all functions of ALIST."
