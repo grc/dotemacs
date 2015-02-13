@@ -95,11 +95,8 @@
 
 ;; puppet
 (when (locate-library "puppet-mode")
-  (autoload 'puppet-mode "puppet-mode")
-  (eval-after-load 'puppet-mode
-    '(progn 
-      (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))))
-
+  (autoload 'puppet-mode "puppet-mode"))
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
 
 
 ;;; Shell script mode
@@ -110,3 +107,8 @@
      (define-key sh-mode-map "\C-c?" nil)))
 
 
+;;; YAML
+;;; Mostlu used for Ansible playbooks
+(when (locate-library "yaml-mode")
+  (autoload 'yaml-mode "yaml-mode"))
+(add-to-list 'auto-mode-alist '("\\.yml" . yaml-mode))
