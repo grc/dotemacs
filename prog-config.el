@@ -84,31 +84,24 @@
 ;;; Clojure
 (unless (package-installed-p 'cider)
   (package-install 'cider))
-
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
 
-;; ;;; Python
-;; (package-initialize)
-;; (elpy-enable)
-;; (setq python-check-command "epylint")
-
-;; puppet
+;;; Puppet
 (when (locate-library "puppet-mode")
-  (autoload 'puppet-mode "puppet-mode"))
-(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+  (autoload 'puppet-mode "puppet-mode")
+  (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))
 
 
 ;;; Shell script mode
-  ;; I use C-c ? for magit-status, but shell mode binds it sh-show-inden
-
+;;; I use C-c ? for magit-status, but shell mode binds it sh-show-inden
 (eval-after-load 'sh-script
   '(progn
      (define-key sh-mode-map "\C-c?" nil)))
 
 
 ;;; YAML
-;;; Mostlu used for Ansible playbooks
+;;; Mostly used for Ansible playbooks
 (when (locate-library "yaml-mode")
-  (autoload 'yaml-mode "yaml-mode"))
-(add-to-list 'auto-mode-alist '("\\.yml" . yaml-mode))
+  (autoload 'yaml-mode "yaml-mode")
+  (add-to-list 'auto-mode-alist '("\\.yml" . yaml-mode)))
