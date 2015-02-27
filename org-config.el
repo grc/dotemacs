@@ -94,29 +94,10 @@
      (setq org-mobile-use-encryption t)
      
 
-     
+     (setq org-todo-keywords
+           '((sequence "TODO" "|" "DONE" "CANCELLED")))
 
-;;; Org Trello integration
-
-     (require 'dash)
-
-     (require 'request)
-
-
-
-
-
-
-
-
-     (require 'noflet)
-     (require 'fakir)
-     (require 'elnode)
-     (require 's)
-     (require 'web)
-     (require 'db)
-
-     (require 'org-trello)))
+))
 
 
 ;;; Simple calendar sync using external shell script
@@ -130,7 +111,9 @@
 
 (defvar grc-org-calendar-update-timer 
        (run-with-timer 1 (* 20 60) 'grc-org-update-calendar )
-       "Timer used to reresh org calendar from google calendar.")
+       "Timer used to refresh org calendar from google calendar.")
+
+
 
 ;;; Exported projects
 
