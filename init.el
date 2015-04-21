@@ -43,6 +43,8 @@
 
 
 
+(require 'hippie-exp)
+(global-set-key "\M-/" 'hippie-expand)
 
 ;;; Repeatable command idea taken from abo-abo:
 ;;; http://oremacs.com/2015/01/14/repeatable-commands/
