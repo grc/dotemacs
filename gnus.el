@@ -78,11 +78,13 @@
 (setq gnus-calendar-org-capture-headline '("Calendar"))
 (gnus-calendar-org-setup)
 
+(setq gnus-treat-mail-gravatar 'head)
 
 
-;; Demons
+ ;; Demons
+ 
 (require 'gnus-demon)
-(gnus-demon-add-handler 'gnus-demon-scan-news 15 5)
+(gnus-demon-add-handler 'gnus-demon-scan-mail 10 2)
 
 
 
