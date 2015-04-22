@@ -200,7 +200,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   '(progn (info-initialize)
 	  (add-to-list 'Info-directory-list "~/git-repos.magit")))
 
-(global-set-key (kbd "C-c ?") 'magit-status)
+(global-set-key (kbd "<f5>") 'magit-status)
 
 
 ;; Sunrise/Sunset stuff
