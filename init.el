@@ -35,16 +35,28 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
 ;; having trouble installing the basic gnu package so let's disable
 ;; the checks
 (setq package-check-signature nil)
+
+(package-initialize)
 
 
 
 
 (require 'hippie-exp)
 (global-set-key "\M-/" 'hippie-expand)
+
+
+;; yasnippet
+(require 'yasnippet)
+(yas-global-mode)
+
 
 ;;; Repeatable command idea taken from abo-abo:
 ;;; http://oremacs.com/2015/01/14/repeatable-commands/
@@ -224,19 +236,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 	     '((regexp-quote (system-name)) nil nil))
 (add-to-list 'tramp-default-proxies-alist
              '("nagios-uk" "root" "/ssh:%h:"))
-
-
-
-
-
-
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-
-(package-initialize)
-
-
 
 
 
