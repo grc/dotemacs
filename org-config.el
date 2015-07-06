@@ -66,16 +66,16 @@
 
      (setq org-src-preserve-indentation t)
 
-     ;; org and yasnippet workaround
-     (defun yas/org-very-safe-expand ()
-       (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+     ;; ;; org and yasnippet workaround
+     ;; (defun yas/org-very-safe-expand ()
+     ;;   (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
 
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (make-variable-buffer-local 'yas/trigger-key)
-                 (setq yas/trigger-key [tab])
-                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-                 (define-key yas/keymap [tab] 'yas/next-field)))
+     ;; (add-hook 'org-mode-hook
+     ;;           (lambda ()
+     ;;             (make-variable-buffer-local 'yas/trigger-key)
+     ;;             (setq yas/trigger-key [tab])
+     ;;             (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+     ;;             (define-key yas/keymap [tab] 'yas/next-field)))
 
 
      ;; Beamer in org 8 and later
@@ -115,12 +115,53 @@
 
 
 
-;;; Exported projects
+(defun grc-org-insert-essay-template ()
+  (interactive)
+  (insert "#+TITLE: 
+          #+DATE: 
+          #+AUTHOR: 
+          #+DESCRIPTION: Thoughts on how to grow a software development team          
+          #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \\n:nil ^:t arch:headline
+          #+OPTIONS: author:t c:nil creator:comment d:(not \"LOGBOOK\") date:t
+          #+OPTIONS: e:t email:nil f:t inline:t num:nil p:nil pri:nil stat:t
+          #+OPTIONS: tags:t tasks:t tex:t timestamp:t toc:nil todo:t |:t
+          #+CREATOR: Emacs 25.0.50.1 (Org mode 8.2.10)
+          
+          #+EXCLUDE_TAGS: noexport
+          #+LANGUAGE: en
+          #+SELECT_TAGS: export
+          #+OPTIONS: texht:t
+          #+LATEX_CLASS: article
+          #+LATEX_CLASS_OPTIONS: [a4paper, 11pt]
+          #+LATEX_HEADER_EXTRA: \\usepackage{fontspec} \\defaultfontfeatures{Ligatures=TeX} \\setmainfont{Calibri}
+          #+LATEX_HEADER_EXTRA: \\usepackage{microtype} \\usepackage{parskip}
+          #+LATEX_HEADER_EXTRA: \\renewcommand{\\bfdefault}{b}")
+          
 
-(setq org-publish-project-alist
-      '(("jujutsu"
-         :base-directory "~/homers/org-expt/src"
-         :publishing-directory "~/homers/org-expt/website"
-         :publishing-function org-html-publish-to-html
-         :make-index t
-         )))
+
+;;; Exported projects
+          
+
+
+
+
+  (setq org-publish-project-alist
+        '(("jujutsu-content"
+           :auto-sitemap nil
+           :base-directory "~/homers/jujutsu/newwebsite/src"
+           :publishing-directory "~/homers/jujutsu/newwebsite/published"
+           :publishing-function org-html-publish-to-html
+           :html-head "<link rel='stylesheet' type='text/css' href='http://www.jujutsu.org.uk/jujutsu.css' />"
+           :html-preamble "<h1 id='site-id'>Daiwa Ryu Jujutsu <span id='tagline'>a traditional martial art</span></h1><div id='menu'><a href='/'>Home</a><a href='/classdetails/'>Class details</a><a href='/articles/'>Articles</a></div> '"
+           :html-postamble ""
+           :recursive t
+           :make-index t)
+          ("jujutsu-static"
+           :base-directory "~/homers/jujutsu/newwebsite/src"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "~/homers/jujutsu/newwebsite/published"
+           :recursive t
+           :publishing-function org-publish-attachment)
+          ("jujutsu"
+           :components ("jujutsu-content" "jujutsu-static"))))
+)

@@ -34,7 +34,7 @@
      ("#A45E0A" . 70)
      ("#A41F99" . 85)
      ("#49483E" . 100))))
- '(magit-diff-use-overlays nil)
+ '(magit-use-overlays nil)
  '(org-agenda-files
    (quote
     ("~/org/home.org" "~/org/calendar.org" "~/org/notes.org")))
@@ -46,6 +46,9 @@
    (quote
     ("lualatex -shell-escape -interaction nonstopmode -output-directory %o %f" "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f" "lualatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
  '(org-latex-to-pdf-process (quote ("LATEX='pdflatex -shell-escape' texi2dvi %f")))
+ '(package-selected-packages
+   (quote
+    (magit yasnippet use-package smartparens org2blog haskell-mode gh expand-region elpy debbugs auctex ace-isearch ac-nrepl)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#A1EFE4" :weight bold))))
@@ -72,6 +75,7 @@
  '(erc-input-face ((t (:foreground "yellow"))))
  '(error ((t (:foreground "red1" :weight bold))))
  '(eshell-prompt ((t (:foreground "chartreuse" :weight normal))))
+ '(flyspell-incorrect ((t (:foreground "gold"))))
  '(font-lock-function-name-face ((t (:foreground "aquamarine"))))
  '(org-todo ((t (:foreground "gold" :weight bold))))
  '(region ((t (:background "CadetBlue4")))))

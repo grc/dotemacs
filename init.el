@@ -54,8 +54,8 @@
 
 
 ;; yasnippet
-(require 'yasnippet)
-(yas-global-mode)
+;;(require 'yasnippet)
+;;(yas-global-mode)
 
 
 ;;; Repeatable command idea taken from abo-abo:
@@ -327,6 +327,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (define-key global-map [(meta ?z)] 'zap-up-to-char) ; Rebind M-z 
 
 
+
 ;; multiple cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -363,8 +364,9 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 ;;; Use Symbola font for any characters not found in my default font:
-(set-fontset-font "fontset-default" nil 
-                  (font-spec :size 20 :name "Symbola"))
+;;; TODO not available in emacs 24
+;(set-fontset-font "fontset-default" nil 
+ ;                 (font-spec :size 20 :name "Symbola"))
 
 
 
