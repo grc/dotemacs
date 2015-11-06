@@ -18,6 +18,12 @@
   (normal-top-level-add-subdirs-to-load-path))
 
 
+
+
+;;; Buffer naming when visiting several files with the same name
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
 (setq-default indent-tabs-mode nil)
 (setq visible-bell t)
 (put 'narrow-to-region 'disabled nil)
