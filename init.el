@@ -55,6 +55,13 @@
 
 
 
+;; Abuility to jump through change locations
+(require 'goto-chg)
+(global-set-key [(control ?.)] 'goto-last-change)
+(global-set-key [(control ?,)] 'goto-last-change-reverse)
+
+
+
 (require 'hippie-exp)
 (global-set-key "\M-/" 'hippie-expand)
 

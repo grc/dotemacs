@@ -21,6 +21,14 @@
  '(custom-safe-themes
    (quote
     ("479eba125f9e97a0208b642a99eee1d816fa208fe3a06f73e444504beb0b17f7" "144c32b0a2f17b78943bbb86217758ba6e62d75dd0623799679d2d08a008aa08" "7ed6913f96c43796aa524e9ae506b0a3a50bfca061eed73b66766d14adfa86d1" default)))
+ '(display-time-world-list
+   (quote
+    (("America/Los_Angeles" "Los Angeles")
+     ("America/New_York" "New York")
+     ("Europe/London" "London")
+     ("Europe/Paris" "Paris")
+     ("Asia/Calcutta" "Bangalore")
+     ("Asia/Tokyo" "Tokyo"))))
  '(fci-rule-color "#49483E")
  '(gnus-ignored-from-addresses (quote ("giles@jujutsu\\.org\\.uk" "giles@pexip\\.com")))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
@@ -48,7 +56,7 @@
  '(org-latex-to-pdf-process (quote ("LATEX='pdflatex -shell-escape' texi2dvi %f")))
  '(package-selected-packages
    (quote
-    (magit yasnippet use-package smartparens org2blog haskell-mode gh expand-region elpy debbugs auctex ace-isearch ac-nrepl)))
+    (goto-chg magit yasnippet use-package smartparens org2blog haskell-mode gh expand-region elpy debbugs auctex ace-isearch ac-nrepl)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#A1EFE4" :weight bold))))

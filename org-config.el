@@ -144,6 +144,7 @@
 
 
 
+  (defun grc-jujutsu-preamble (info) (format "Base directory %s" (plist-get info :base-directory)))
 
   (setq org-publish-project-alist
         '(("jujutsu-content"
@@ -152,7 +153,7 @@
            :publishing-directory "~/homers/jujutsu/newwebsite/published"
            :publishing-function org-html-publish-to-html
            :html-head "<link rel='stylesheet' type='text/css' href='http://www.jujutsu.org.uk/jujutsu.css' />"
-           :html-preamble "<h1 id='site-id'>Daiwa Ryu Jujutsu <span id='tagline'>a traditional martial art</span></h1><div id='menu'><a href='/'>Home</a><a href='/classdetails/'>Class details</a><a href='/articles/'>Articles</a></div> '"
+           :html-preamble "</h1 id='site-id'>Daiwa Ryu Jujutsu <span id='tagline'>a traditional martial art</span></h1><div id='menu'><a href='/'>Home</a><a href='/classdetails/'>Class details</a><a href='/articles/'>Articles</a></div> '"
            :html-postamble ""
            :recursive t
            :make-index t)
@@ -165,3 +166,4 @@
           ("jujutsu"
            :components ("jujutsu-content" "jujutsu-static"))))
 )
+
