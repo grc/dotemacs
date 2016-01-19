@@ -30,6 +30,9 @@
 
 ;;; gnus-alias to select an identity to post as
 
+
+
+
 (require 'gnus-alias)
 (setq gnus-alias-identity-alist 
       '(("work"
@@ -76,6 +79,47 @@
 (gnus-calendar-org-setup)
 
 (setq gnus-treat-mail-gravatar 'head)
+
+
+
+;;; Check for attachments
+;;; Taken from http://www.emacswiki.org/emacs/GnusAttachmentReminder
+(defun check-attachments-attached () 
+  (interactive) 
+  (save-excursion 
+    (goto-char (point-min)) 
+    (let* ( 
+           ;; Nil when message came from outside (eg calling emacs as editor) 
+           ;; Non-nil marker of end of headers. 
+           (internal-messagep 
+            (re-search-forward 
+             (concat "^" (regexp-quote mail-header-separator) "$") nil t)) 
+           (end-of-headers              ; Start of body. 
+            (copy-marker 
+             (or internal-messagep 
+                 (re-search-forward "^$" nil t) 
+                 (point-min)))) 
+           (limit  
+            (or (re-search-forward "^-- $" nil t)  
+                (point-max)))               
+           (old-case-fold-search case-fold-search)) 
+      (unwind-protect 
+          (progn 
+            (goto-char end-of-headers) 
+            (when (re-search-forward "attach" limit t) 
+              (goto-char end-of-headers) 
+              ;; the word 'attach' has been used, can we find an 
+              ;; attachment? 
+              (unless  
+                  (or (re-search-forward "^<#/" limit t) 
+                      (y-or-n-p 
+                       "No attachment. Send the message ? " 
+                       ) 
+                      (error "no message sent"))))) 
+        (set-marker end-of-headers nil)))))  
+
+(add-hook 'message-send-hook 'check-attachments-attached) 
+
 
 
  ;; Demons
