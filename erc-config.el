@@ -3,6 +3,7 @@
 
 (message "loading erc config")
 (require 'erc)
+(require 'tls)
 (add-hook 'erc-mode-hook 'flyspell-mode)
 (add-hook 'erc-mode-hook 'abbrev-mode)
 (setq erc-hide-list '("JOIN" "PART" "QUIT" "NAMES" "MODE"))
@@ -20,11 +21,6 @@
     
 (setq erc-header-line-face-method 'erc-update-header-line-show-disconnected)
 
-(require 'erc-image)
-(add-to-list 'erc-modules 'image)
-(erc-update-modules)
-
-(require 'tls)
 
 (load "~/grc-config/erc-auth.el")       ; credentials for pexip slack account
 
@@ -35,5 +31,4 @@
        :password pexip-slack-password))
 
 (setq erc-autojoin-channels-alist
-      '(("irc.pexnote.com" "#pexnote") ; our server is still announcing the old FQDN
-	("freenode.net" "#emacs" "#zsh" "#stumpwm")))
+      '(("freenode.net" "#emacs" "#zsh" "#stumpwm")))
