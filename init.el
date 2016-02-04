@@ -55,7 +55,14 @@
 
 
 
-;; Abuility to jump through change locations
+;;; For some reason, calc out of the box gives multiplication a higher
+;;; precedence than division so 10/2*5 = 1.  This is at variance with
+;;; the BODMAS rule I learnt at school. Explanation of the vagaries
+;;; can be found at
+;;; https://en.wikipedia.org/wiki/Order_of_operations#Exceptions
+(setq calc-multiplication-has-precedence nil)
+
+;; Ability to jump through change locations
 (require 'goto-chg)
 (global-set-key [(control ?.)] 'goto-last-change)
 (global-set-key [(control ?,)] 'goto-last-change-reverse)
@@ -218,15 +225,17 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (require 'vc-git)
 (setq vc-follow-symlinks t) ;; don't ask when following symlinks to a controlled file
 
-;;; Magit
 
-(require 'magit)
+
+
 (eval-after-load 'info 
   '(progn (info-initialize)
 	  (add-to-list 'Info-directory-list "~/git-repos.magit")))
 
+;;; Magit
+(require 'magit)
 (global-set-key (kbd "<f5>") 'magit-status)
-(setq magit-last-seen-setup-instructions "1.4.0")
+
 
 
 ;; Sunrise/Sunset stuff
@@ -407,7 +416,16 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (global-set-key (kbd "C-=") 'er/expand-region)
 
 
+;;; Keymap stuff heavily inspired by http://endlessparentheses.com/the-toggle-map-and-wizardry.html
 
+(define-prefix-command 'grc/toggle-map)
+
+(define-key ctl-x-map "t" 'grc/toggle-map)
+
+(define-key grc/toggle-map "p" #'paredit-mode)
+(define-key grc/toggle-map "r" #'dired-toggle-read-only)
+(autoload 'dired-toggle-read-only "dired" nil t)
+(define-key grc/toggle-map "w" #'whitespace-mode)
 
 
 
@@ -425,6 +443,9 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
                        (message (format "loading %s" config))
                        (load config))) configs)
+
+
+
 
 
 
