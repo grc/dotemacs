@@ -74,8 +74,8 @@
 
 
 ;; yasnippet
-;;(require 'yasnippet)
-;;(yas-global-mode)
+(require 'yasnippet)
+(yas-global-mode)
 
 
 ;;; Repeatable command idea taken from abo-abo:
