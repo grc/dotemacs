@@ -429,6 +429,19 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
+;;; Make it easier to access email
+(defun grc-mail ()
+  "If gnus already has a group buffer open, switch to it,
+otherwise run gnus to create such a buffer."
+  (interactive)
+  (if (get-buffer "*Group*" )
+      (switch-to-buffer "*Group*")
+    (gnus)))
+
+(global-set-key (kbd "<f12>") #'grc-mail)
+
+
+
 ;;; Load in other config
 
 (setq config-dir "~/.emacs.d")
@@ -437,7 +450,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
                  "erc-config"
                  "mail-config"
                  "org-config"
-                 "org-blog-config"
+                 ;"org-blog-config"
                  "prog-config"))
 
 (mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
