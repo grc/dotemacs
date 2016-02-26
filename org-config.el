@@ -66,33 +66,29 @@
 
      (setq org-src-preserve-indentation t)
 
-     ;; ;; org and yasnippet workaround
-     ;; (defun yas/org-very-safe-expand ()
-     ;;   (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+     ;; Note that yasnippet has changed its naming conventions from
+     ;; yas/foo to yas-foo so this formula is different to that found
+     ;; on the emacswiki
+
+     (add-hook 'org-mode-hook
+	  (let ((original-command (lookup-key org-mode-map [tab])))
+	    `(lambda ()
+	       (setq yas-fallback-behavior
+		     '(apply ,original-command))
+	       (local-set-key [tab] 'yas-expand))))
+     ;; (defun grc-yas/org-very-safe-expand ()
+     ;;   (let ((yas-fallback-behavior 'return-nil)) (yas-expand)))
+
 
      ;; (add-hook 'org-mode-hook
      ;;           (lambda ()
-     ;;             (make-variable-buffer-local 'yas/trigger-key)
-     ;;             (setq yas/trigger-key [tab])
-     ;;             (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-     ;;             (define-key yas/keymap [tab] 'yas/next-field)))
-
+     ;;             (make-variable-buffer-local 'yas-trigger-key)
+     ;;             (setq yas-trigger-key [tab])
+     ;;             (add-to-list 'org-tab-first-hook 'grc-yas/org-very-safe-expand)
+     ;;             (define-key yas-keymap [tab] 'yas-next-field)))
 
      ;; Beamer in org 8 and later
      (require 'ox-beamer)
-
-
-
-     ;; mobile org
-     (require 'org-mobile)
-     ;; Set to the name of the file where new notes will be stored
-     (setq org-mobile-inbox-for-pull "~/org/flagged.org")
-     ;; Set to <your Dropbox root directory>/MobileOrg.
-     (setq org-mobile-directory "/Volumes/dav")
-
-     ;; Enable encryption-decryption
-     (setq org-mobile-use-encryption t)
-     
 
      (setq org-todo-keywords
            '((sequence "TODO" "|" "DONE" "CANCELLED")))
