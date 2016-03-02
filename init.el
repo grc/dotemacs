@@ -111,9 +111,19 @@ It sets the transient map to all functions of ALIST."
 
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(require 'dired-x)
 (require 'ag)                           ; grep on steroids
 
+
+;;; Dired related functionality
+
+(require 'dired-x)
+
+;; Narrow dired to match a filter.
+;; Restore the original buffer with `g'
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
 
 
 
