@@ -22,7 +22,7 @@
     
      (setq org-agenda-span 'day)
      (setq org-use-sub-superscripts nil)
-
+     
      ;; Capture template
      (setq org-capture-templates
            '(("t" "Scheduled task" entry
@@ -43,26 +43,17 @@
 
      (setq org-default-notes-file (concat org-directory "/notes.org"))
 
-                                        ; enable logging
      (setq org-log-done 'time)
 
 
      ;; Make org-table mode available in email
      (add-hook 'message-mode-hook 'turn-on-orgtbl)
 
-     (require 'footnote)
-     (add-hook 'message-mode-hook 'footnote-mode)
-
-
-
-
-
-
      (setq org-babel-tangle-lang-exts (quote (("clojure" . "clj") ("emacs-lisp" . "el"))))
 
      (org-babel-do-load-languages
       'org-babel-load-languages
-      '((emacs-lisp . t))) 
+       '((emacs-lisp . t))) 
 
      (setq org-src-preserve-indentation t)
 
@@ -71,25 +62,25 @@
      ;; variants on emacswiki fail with newer yasniipets as the naming
      ;; scheme changed from yas/ to yas-
      (add-hook 'org-mode-hook
-	  (let ((original-command (lookup-key org-mode-map [tab])))
-	    `(lambda ()
-	       (setq yas-fallback-behavior
-		     '(apply ,original-command))
-	       (local-set-key [tab] 'yas-expand))))
+          (let ((original-command (lookup-key org-mode-map [tab])))
+            `(lambda ()
+               (setq yas-fallback-behavior
+        	     '(apply ,original-command))
+               (local-set-key [tab] 'yas-expand))))
 
 
-     ;; And we need a way to insert org-export data.  yas-with-comment
-     ;; uses comment-start which contains an unwanted space.
+     ;; ;; And we need a way to insert org-export data.  yas-with-comment
+     ;; ;; uses comment-start which contains an unwanted space.
      (defun grc-org-export-comment (str)
        (format "#+%s" str))
      
-     ;; Beamer in org 8 and later
+     ;; ;; Beamer in org 8 and later
      (require 'ox-beamer)
 
      (setq org-todo-keywords
            '((sequence "TODO" "|" "DONE" "CANCELLED")))
 
-))
+     ))  ;; end of progn & eval after load
 
 
 ;;; Simple calendar sync using external shell script
@@ -107,31 +98,5 @@
 
 
 
-;;; Exported projects
-          
 
-
-
-  (defun grc-jujutsu-preamble (info) (format "Base directory %s" (plist-get info :base-directory)))
-
-  (setq org-publish-project-alist
-        '(("jujutsu-content"
-           :auto-sitemap nil
-           :base-directory "~/homers/jujutsu/newwebsite/src"
-           :publishing-directory "~/homers/jujutsu/newwebsite/published"
-           :publishing-function org-html-publish-to-html
-           :html-head "<link rel='stylesheet' type='text/css' href='http://www.jujutsu.org.uk/jujutsu.css' />"
-           :html-preamble "</h1 id='site-id'>Daiwa Ryu Jujutsu <span id='tagline'>a traditional martial art</span></h1><div id='menu'><a href='/'>Home</a><a href='/classdetails/'>Class details</a><a href='/articles/'>Articles</a></div> '"
-           :html-postamble ""
-           :recursive t
-           :make-index t)
-          ("jujutsu-static"
-           :base-directory "~/homers/jujutsu/newwebsite/src"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory "~/homers/jujutsu/newwebsite/published"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("jujutsu"
-           :components ("jujutsu-content" "jujutsu-static"))))
-)
 

@@ -271,6 +271,12 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 
 
+;; Message mode
+(require 'footnote)
+(add-hook 'message-mode-hook 'footnote-mode)
+
+
+
 ;;; eshell
 
 (autoload 'eshell "eshell")
@@ -455,6 +461,7 @@ otherwise run gnus to create such a buffer."
 ;;; Load in other config
 
 (setq config-dir "~/.emacs.d")
+
 (setq configs '( "auctex-config"
                  "bbdb-config"
                  "erc-config"
@@ -463,13 +470,12 @@ otherwise run gnus to create such a buffer."
                  ;"org-blog-config"
                  "prog-config"))
 
-(mapc (lambda (file) (let ((config (format "%s/%s" config-dir file)))
-                       (message (format "loading %s" config))
-                       (load config))) configs)
 
 
 
-
+(dolist (config configs)
+  (message (format "loading %s" config))
+  (load (format "%s/%s" config-dir config)))
 
 
 
