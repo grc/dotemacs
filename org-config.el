@@ -69,12 +69,7 @@
                (local-set-key [tab] 'yas-expand))))
 
 
-     ;; ;; And we need a way to insert org-export data.  yas-with-comment
-     ;; ;; uses comment-start which contains an unwanted space.
-     (defun grc-org-export-comment (str)
-       (format "#+%s" str))
-     
-     ;; ;; Beamer in org 8 and later
+     ;; Beamer in org 8 and later
      (require 'ox-beamer)
 
      (setq org-todo-keywords
