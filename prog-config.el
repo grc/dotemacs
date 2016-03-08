@@ -17,6 +17,9 @@
    (cl-callf color-saturate-name (face-foreground face) 30)))
 
 
+
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
 
 
 

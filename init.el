@@ -152,6 +152,11 @@ It sets the transient map to all functions of ALIST."
 
 
 ;;; Spelling correction
+
+;;; C-x C-i will use ispell to correct the word at
+;;; point, then add it to the list of abbrevs for future automatic
+;;; correction.  Use `list-abbrevs' to see how consistently bad your
+;;; spelling is.
 (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
 
 (defun endless/ispell-word-then-abbrev (p)
