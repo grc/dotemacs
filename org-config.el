@@ -61,10 +61,17 @@
      ;; http://capitaomorte.github.io/yasnippet/faq.html Note that the
      ;; variants on emacswiki fail with newer yasniipets as the naming
      ;; scheme changed from yas/ to yas-
+
+     ;; Note that this sets the fallback behaviour for *any* mode
+     ;; which uses yasnippets to cause it to call the org behaviour.
+     ;; This is a Bad Thing in say ERC or a Lisp REPL To get round
+     ;; that set yas-fallback-behavior to be a buffer local
+     ;; variable.  Here we differ from the example in the yasnippets
+     ;; FAQ in their manual.
      (add-hook 'org-mode-hook
           (let ((original-command (lookup-key org-mode-map [tab])))
             `(lambda ()
-               (setq yas-fallback-behavior
+               (setq (make-local-variable yas-fallback-behavior)
         	     '(apply ,original-command))
                (local-set-key [tab] 'yas-expand))))
 
