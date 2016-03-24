@@ -41,7 +41,7 @@
 	 "Pexip"
 	 nil
 	 nil
-	 "Giles Chamberlin")
+	 "Giles Chamberlin\nMobile: +44 (0)7801 972920")
 	("jujutsu"
 	 nil
 	 "giles@jujutsu.org.uk"
@@ -105,7 +105,10 @@
            (old-case-fold-search case-fold-search)) 
       (unwind-protect 
           (progn 
-            (goto-char end-of-headers) 
+            (goto-char end-of-headers)
+            ; TODO: Could add a check for ":whitespace:> " to prevent
+            ; false positives on quoted text.  Had a few of those
+            ; recently.
             (when (re-search-forward "attach" limit t) 
               (goto-char end-of-headers) 
               ;; the word 'attach' has been used, can we find an 
@@ -113,12 +116,38 @@
               (unless  
                   (or (re-search-forward "^<#/" limit t) 
                       (y-or-n-p 
-                       "No attachment. Send the message ? " 
-                       ) 
+                       "No attachment. Send the message? ") 
                       (error "no message sent"))))) 
         (set-marker end-of-headers nil)))))  
 
 (add-hook 'message-send-hook 'check-attachments-attached) 
+
+
+;;; Hard new lines
+;;; Idea is to use hard new lines for return key so
+;;; that emails can be sent as flowed.  We display the hard new lines
+;;; so that code excerpts etc can be fixed up if needed before
+;;; sending.
+(defun my-mark-hard-newlines (beg end &rest _ignore)
+  (interactive (list (point-min) (point-max)))
+  (save-excursion
+    (goto-char beg)
+    (while (search-forward "\n" end t)
+       (let ((pos (1- (point))))
+         (if (get-text-property pos 'hard)
+             ;; Use `copy-sequence', because display property values must not be `eq'!
+             (add-text-properties pos (1+ pos)
+                                  (list 'display (copy-sequence "⏎\n")))
+           (remove-text-properties pos (1+ pos) '(displaynil)))))))
+
+(defun my-use-and-mark-hard-newlines ()
+  (interactive)
+  (use-hard-newlines)
+  (add-hook 'after-change-functions 'my-mark-hard-newlines nil  t))
+
+(with-eval-after-load "message"
+  (add-hook 'message-mode-hook 'my-use-and-mark-hard-newlines))
+
 
 
 
