@@ -19,7 +19,10 @@
 ;;; After loading org-mode
 (eval-after-load 'org
   '(progn 
-    
+
+     (require 'org-capture)
+     (require 'org-agenda)
+     
      (setq org-agenda-span 'day)
      (setq org-use-sub-superscripts nil)
      
@@ -49,32 +52,14 @@
      ;; Make org-table mode available in email
      (add-hook 'message-mode-hook 'turn-on-orgtbl)
 
-     (setq org-babel-tangle-lang-exts (quote (("clojure" . "clj") ("emacs-lisp" . "el"))))
+     (setq org-babel-tangle-lang-exts (quote (("clojure" . "clj") ("emacs-lisp" . "el") ("python" . "py"))))
 
      (org-babel-do-load-languages
       'org-babel-load-languages
-       '((emacs-lisp . t))) 
+      '((emacs-lisp . t)
+        (python . t))) 
 
      (setq org-src-preserve-indentation t)
-
-     ;; yasnippet interop as described in
-     ;; http://capitaomorte.github.io/yasnippet/faq.html Note that the
-     ;; variants on emacswiki fail with newer yasniipets as the naming
-     ;; scheme changed from yas/ to yas-
-
-     ;; Note that this sets the fallback behaviour for *any* mode
-     ;; which uses yasnippets to cause it to call the org behaviour.
-     ;; This is a Bad Thing in say ERC or a Lisp REPL To get round
-     ;; that set yas-fallback-behavior to be a buffer local
-     ;; variable.  Here we differ from the example in the yasnippets
-     ;; FAQ in their manual.
-     (add-hook 'org-mode-hook
-          (let ((original-command (lookup-key org-mode-map [tab])))
-            `(lambda ()
-               (setq (make-local-variable yas-fallback-behavior)
-        	     '(apply ,original-command))
-               (local-set-key [tab] 'yas-expand))))
-
 
      ;; Beamer in org 8 and later
      (require 'ox-beamer)
