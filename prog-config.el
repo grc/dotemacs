@@ -4,7 +4,8 @@
 ;;; Rainbow delimiters: colour pmatching pairs of parentheses etc
 ;;; Makes sense to turn this on wherever we have paredit mode enabled
 (global-prettify-symbols-mode 1)
-
+;;; But if point is on the symbol, unprettify it
+(customize-set-value 'prettify-symbols-unprettify-at-point 'right-edge)
 
 (require 'rainbow-delimiters)
 ;;; Colours are a bit too subtle by default so saturate them
@@ -21,10 +22,6 @@
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 
-
-
-
-
 ;;; Javascript
 
 
@@ -45,16 +42,17 @@
 (require 'flymake-jslint)
 (add-hook 'js2-mode-hook 'flymake-jslint-load)
 
+
 ;;; Emacs Lisp
 (require 'eldoc)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 
 
 (require 'elisp-slime-nav)
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'elisp-slime-nav-mode))
 
-
+
 ;;; Lisp
 
 (setq inferior-lisp-program "sbcl")
@@ -89,22 +87,10 @@
   (package-install 'cider))
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
-
+
 ;;; Puppet
 (when (locate-library "puppet-mode")
   (autoload 'puppet-mode "puppet-mode")
   (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))
 
 
-;;; Shell script mode
-;;; I use C-c ? for magit-status, but shell mode binds it sh-show-inden
-(eval-after-load 'sh-script
-  '(progn
-     (define-key sh-mode-map "\C-c?" nil)))
-
-
-;;; YAML
-;;; Mostly used for Ansible playbooks
-(when (locate-library "yaml-mode")
-  (autoload 'yaml-mode "yaml-mode")
-  (add-to-list 'auto-mode-alist '("\\.yml" . yaml-mode)))
