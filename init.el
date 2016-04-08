@@ -1,6 +1,6 @@
-;;; init.el --- Emacs init file
+;; init.el --- Emacs init file
 ;;; Code:
-(setq inhibit-splash-screen t)
+(customize-set-variable 'inhibit-splash-screen t)
 
 
 (require 'server)
@@ -125,7 +125,13 @@ It sets the transient map to all functions of ALIST."
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
 
-
+;;; Pretty Control-L
+;;; Replace ^L with a pretty, and obvious, section
+;;; https://www.emacswiki.org/emacs/PrettyControlL
+(use-package pp-c-l
+  :ensure t
+  :config
+  (pretty-control-l-mode 1))
 
 ;;; font-lock-mode warning text has an associated help string,
 ;;; displayed by default on mouse over. I'd like that echoed in the
@@ -455,13 +461,22 @@ With prefix P, create local abbrev. Otherwise it will be global."
   "If gnus already has a group buffer open, switch to it,
 otherwise run gnus to create such a buffer."
   (interactive)
-  (if (get-buffer "*Group*" )
-      (switch-to-buffer "*Group*")
+  (if (and (boundp 'gnus-group-buffer)
+           (get-buffer gnus-group-buffer))
+      (progn
+        (switch-to-buffer gnus-group-buffer)
+        (gnus-group-get-new-news))
     (gnus)))
 
 (global-set-key (kbd "<f12>") #'grc-mail)
 
 
+;;; Google search, keymap bound to C-c /
+;;; https://github.com/Malabarba/emacs-google-this/
+(use-package google-this
+  :ensure t
+  :config
+  (google-this-mode 1))
 
 ;;; Load in other config
 
@@ -481,6 +496,8 @@ otherwise run gnus to create such a buffer."
 (dolist (config configs)
   (message (format "loading %s" config))
   (load (format "%s/%s" config-dir config)))
+
+
 
 
 
