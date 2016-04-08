@@ -138,6 +138,8 @@ It sets the transient map to all functions of ALIST."
 ;;; minibuffer.
 (setq help-at-pt-display-when-idle t)
 
+
+;;; Spelling
 (require 'flyspell)
 (setq ispell-program-name "aspell")
 (setq ispell-list-command "list")
@@ -145,16 +147,6 @@ It sets the transient map to all functions of ALIST."
 ;; language customisations occur in .aspell.conf:
 ;; lang en
 ;; master en_GB
-
-
-
-(defun grc-text-hook ()
-  (flyspell-mode)
-  (abbrev-mode)
-  (auto-fill-mode 1))
-
-(add-hook 'text-mode-hook 'grc-text-hook)
-
 
 
 ;;; Spelling correction
@@ -181,6 +173,65 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 (setq save-abbrevs t)
 (setq-default abbrev-mode t)
+
+
+;; Flyspell's default "goto-next error" behaviour is annoying: I want
+;; to go the one I just made, not loop all the way round the buffer.
+;; This function is lifted from: http://pragmaticemacs.com/emacs/jump-back-to-previous-typo/
+;; in turn based on code by hatschipuh at http://emacs.stackexchange.com/a/14912/2017
+(defun flyspell-goto-previous-error (arg)
+  "Go to arg previous spelling error."
+  (interactive "p")
+  (while (not (= 0 arg))
+    (let ((pos (point))
+          (min (point-min)))
+      (if (and (eq (current-buffer) flyspell-old-buffer-error)
+               (eq pos flyspell-old-pos-error))
+          (progn
+            (if (= flyspell-old-pos-error min)
+                ;; goto beginning of buffer
+                (progn
+                  (message "Restarting from end of buffer")
+                  (goto-char (point-max)))
+              (backward-word 1))
+            (setq pos (point))))
+      ;; seek the next error
+      (while (and (> pos min)
+                  (let ((ovs (overlays-at pos))
+                        (r '()))
+                    (while (and (not r) (consp ovs))
+                      (if (flyspell-overlay-p (car ovs))
+                          (setq r t)
+                        (setq ovs (cdr ovs))))
+                    (not r)))
+        (backward-word 1)
+        (setq pos (point)))
+      ;; save the current location for next invocation
+      (setq arg (1- arg))
+      (setq flyspell-old-pos-error pos)
+      (setq flyspell-old-buffer-error (current-buffer))
+      (goto-char pos)
+      (if (= pos min)
+          (progn
+            (message "No more miss-spelled word!")
+            (setq arg 0))
+        (forward-word)))))
+
+;; Bind this to C-, in place of the usual flyspell-goto-next-error
+(bind-key* "C-," #'flyspell-goto-previous-error)
+
+
+
+
+(defun grc-text-hook ()
+  (flyspell-mode)
+  (abbrev-mode)
+  (auto-fill-mode 1))
+
+(add-hook 'text-mode-hook 'grc-text-hook)
+
+
+
 
 
 
