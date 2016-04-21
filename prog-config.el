@@ -19,6 +19,18 @@
 
 
 
+
+;;; Enable hide-show-mode for programming, but for goodness sake give
+;;; it some decent key bindings
+(add-hook 'prog-mode-hook
+          (lambda()
+            (local-set-key (kbd "C-c <right>") 'hs-show-block)
+            (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+            (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+            (local-set-key (kbd "C-c <down>")  'hs-show-all)
+            (hs-minor-mode t)))
+
+
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 
