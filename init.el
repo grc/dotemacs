@@ -20,6 +20,14 @@
 
 
 
+;;; If using the nextstep build, set modifiers to match what I'm used
+;;; to under X11.
+(if (featurep 'ns
+              (progn
+                (setq mac-option-modifier 'none)
+                (setq mac-command-modifier 'meta))))
+
+
 ;;; Buffer naming when visiting several files with the same name
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
