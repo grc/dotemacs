@@ -122,6 +122,11 @@ It sets the transient map to all functions of ALIST."
 (require 'ag)                           ; grep on steroids
 
 
+;;; diminish is intended to remove various minor modes from the
+;;; mode-line listing
+(require 'diminish)
+
+
 ;;; Dired related functionality
 
 (require 'dired-x)
@@ -140,6 +145,16 @@ It sets the transient map to all functions of ALIST."
   :ensure t
   :config
   (pretty-control-l-mode 1))
+
+
+;;; which-key
+;;; Pop up help about completions
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :config
+  (which-key-mode))
+
 
 ;;; font-lock-mode warning text has an associated help string,
 ;;; displayed by default on mouse over. I'd like that echoed in the
@@ -169,6 +184,7 @@ It sets the transient map to all functions of ALIST."
   "Call `ispell-word'. Then create an abbrev for the correction made.
 With prefix P, create local abbrev. Otherwise it will be global."
   (interactive "P")
+  (push-mark)
   (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
     (call-interactively 'ispell-word)
     (setq aft (downcase (or (thing-at-point 'word) "")))
@@ -486,8 +502,26 @@ With prefix P, create local abbrev. Otherwise it will be global."
 ;;; mouse events which confuse emacs:
 (dolist (k '([mouse-6] [down-mouse-6] [drag-mouse-6] [double-mouse-6] [triple-mouse-6]
              [mouse-7] [down-mouse-7] [drag-mouse-7] [double-mouse-7] [triple-mouse-7]))
-  (global-unset-key k))
+  (global-set-key k #'ignore))
 
+
+
+
+
+(define-minor-mode disable-mouse-mode
+  "A minor-mode that disables all mouse keybinds."
+  :global t
+  :lighter " 🐭"
+  :keymap (make-sparse-keymap))
+
+(dolist (type '(mouse down-mouse drag-mouse
+                      double-mouse triple-mouse))
+  (dolist (prefix '("" C- M- S- M-S- C-M- C-S- C-M-S-))
+    ;; Yes, I actually HAD to go up to 7 here.
+    (dotimes (n 7)
+      (let ((k (format "%s%s-%s" prefix type n)))
+        (define-key disable-mouse-mode-map
+          (vector (intern k)) #'ignore)))))
 
 ;;;; Pexip MCU functionality
 
