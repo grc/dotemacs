@@ -22,10 +22,10 @@
 
 ;;; If using the nextstep build, set modifiers to match what I'm used
 ;;; to under X11.
-(if (featurep 'ns
+(if (featurep 'ns)
               (progn
                 (setq mac-option-modifier 'none)
-                (setq mac-command-modifier 'meta))))
+                (setq mac-command-modifier 'meta)))
 
 
 ;;; Buffer naming when visiting several files with the same name
@@ -51,6 +51,10 @@
 
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
 
 
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
@@ -571,6 +575,10 @@ otherwise run gnus to create such a buffer."
   :config
   (google-this-mode 1))
 
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode))
 ;;; Load in other config
 
 (setq config-dir "~/.emacs.d")
