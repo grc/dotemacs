@@ -137,7 +137,7 @@
          (if (get-text-property pos 'hard)
              ;; Use `copy-sequence', because display property values must not be `eq'!
              (add-text-properties pos (1+ pos)
-                                  (list 'display (copy-sequence "⏎\n")))
+                                  (list 'display (copy-sequence "↵\n")))
            (remove-text-properties pos (1+ pos) '(displaynil)))))))
 
 (defun my-use-and-mark-hard-newlines ()
