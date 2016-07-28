@@ -7,38 +7,46 @@
 
 (bbdb-mua-auto-update-init)
 
-                                        ;(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(setq bbdb-default-country "UK")
 
-;(bbdb-insinuate-message)
-
-(setq bbdb-file "~/.emacs.d/bbdb")           ;; keep ~/ clean; set before loading
+(setq bbdb-file "~/.emacs.d/bbdb")           
 
 
-;; This block was initially lifted from
-;; http://emacs-fu.blogspot.co.uk/2009/08/managing-e-mail-addresses-with-bbdb.html
-;; (setq 
-;;     bbdb-offer-save 1                        ;; 1 means save-without-asking
-;;     bbdb-use-pop-up nil                        ;; allow popups for addresses
-;;     bbdb-electric-p nil                        ;; be disposable with SPC
-;;     bbdb-popup-target-lines  1               ;; very small
-;;     bbdb-dwim-net-address-allow-redundancy t ;; always use full name
-;;     bbdb-quiet-about-name-mismatches t 
-;;     bbdb-always-add-address t                ;; add new addresses to existing...
-;;                                              ;; ...contacts automatically
-;;     bbdb-canonicalize-redundant-nets-p t     ;; x@foo.bar.cx => x@bar.cx
-;;     bbdb-completion-type nil                 ;; complete on anything
-;;     bbdb-complete-name-allow-cycling t       ;; cycle through matches
-;;                                              ;; this only works partially
-;;     bbbd-message-caching-enabled t           ;; be fast
-;;     bbdb-elided-display t                    ;; single-line addresses
+;;; Extracting info from BBDB for form letters etc
 
-;;     ;; auto-create addresses from mail
-;;     bbdb/news-auto-create-p 'bbdb-ignore-some-messages-hook   
-;;     bbdb-ignore-some-messages-alist ;; don't ask about fake addresses
-;;     ;; NOTE: there can be only one entry per header (such as To, From)
-;;     ;; http://flex.ee.uec.ac.jp/texi/bbdb/bbdb_11.html
+(defun grc-pexip-employees ()
+  (interactive)
+  (insert (string-join
+           (mapcar #'grc-bbdb-name-address
+                   (bbdb-search (bbdb-records) nil "Pexip Ltd"))
+           "\n")))
 
-;;     '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebook\\|twitter\\|linkedin\\|github")))
+(defun grc-home-address (record)
+  (let* ((addrs (bbdb-record-address record))
+         (home (car (remove-if-not (lambda (a) (string= "home" (bbdb-address-label a)))
+                                   addrs)))
+         (latex-line-break "\\\\"))
+    (if home
+        (string-join
+         (list
+          (string-join (bbdb-address-streets home) latex-line-break)
+          (bbdb-address-city home))
+         latex-line-break))))
+
+(defun grc-bbdb-name-address (record)
+  "Return a string containing the name and home address of the given record.
+String is suitable for use as data with the LaTeX textmerg package"
+  
+  (let ((given-name (bbdb-record-firstname record))
+        (surname (bbdb-record-lastname record))
+        (home-address (grc-home-address record)))
+    (string-join (list given-name
+                       surname
+                       home-address
+                       " ") ;to give us a blank line
+                 "\n")))
+
+
 
 
 
