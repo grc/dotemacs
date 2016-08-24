@@ -42,6 +42,8 @@
      ("#A45E0A" . 70)
      ("#A41F99" . 85)
      ("#49483E" . 100))))
+ '(inhibit-splash-screen t)
+ '(inhibit-startup-screen t)
  '(magit-use-overlays nil)
  '(org-agenda-files
    (quote
@@ -56,7 +58,8 @@
  '(org-latex-to-pdf-process (quote ("LATEX='pdflatex -shell-escape' texi2dvi %f")))
  '(package-selected-packages
    (quote
-    (goto-chg magit yasnippet use-package smartparens org2blog haskell-mode gh expand-region elpy debbugs auctex ace-isearch ac-nrepl)))
+    (crux bug-hunter request projectile gist haskell-emacs gnorb paradox org magit goto-chg use-package smartparens haskell-mode gh expand-region debbugs auctex ace-isearch ac-nrepl)))
+ '(paradox-github-token t)
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#A1EFE4" :weight bold))))

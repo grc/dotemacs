@@ -41,7 +41,7 @@
 (setq erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE"))
 (setq erc-track-use-faces t)
 (setq erc-track-faces-priority-list
-      '(erc-current-nick-face erc-keyword-face))
+      '(erc-current-nick-face erc-keyword-face erc-default-face))
 (setq erc-track-priority-faces-only 'all)
 
 

@@ -70,26 +70,30 @@
 (setq inferior-lisp-program "sbcl")
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 
-;; Add hook to assorted lisp modes
-(mapc (lambda (hook) (add-hook hook 'paredit-mode))
-      '(clojure-mode-hook
-	slime-repl-mode-hook
-	emacs-lisp-mode-hook
-	ielm-mode-hook))
 
-(when (locate-library "paredit")
-  (autoload 'paredit-mode "paredit"
-    "Turn on pseudo-structural editing of Lisp code."
-    t)
+(require 'smartparens-config)
+(add-hook 'prog-mode-hook 'smartparens-mode)
 
-  ;; By default paredit-splice-sexp is bount to M-s which stomps on a lot
-  ;; of useful key bindings, so fix that.  Similarly the `\' behaviour is
-  ;; weird.
-  (eval-after-load 'paredit
-    '(progn 
-       (define-key paredit-mode-map "\M-s" nil) 
-       (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
-       (define-key paredit-mode-map "\\" nil))))
+;; ;; Add hook to assorted lisp modes
+;; (mapc (lambda (hook) (add-hook hook 'paredit-mode))
+;;       '(clojure-mode-hook
+;; 	slime-repl-mode-hook
+;; 	emacs-lisp-mode-hook
+;; 	ielm-mode-hook))
+
+;; (when (locate-library "paredit")
+;;   (autoload 'paredit-mode "paredit"
+;;     "Turn on pseudo-structural editing of Lisp code."
+;;     t)
+
+;;   ;; By default paredit-splice-sexp is bount to M-s which stomps on a lot
+;;   ;; of useful key bindings, so fix that.  Similarly the `\' behaviour is
+;;   ;; weird.
+;;   (eval-after-load 'paredit
+;;     '(progn 
+;;        (define-key paredit-mode-map "\M-s" nil) 
+;;        (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
+;;        (define-key paredit-mode-map "\\" nil))))
 
 
 

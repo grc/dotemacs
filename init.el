@@ -23,9 +23,9 @@
 ;;; If using the nextstep build, set modifiers to match what I'm used
 ;;; to under X11.
 (if (featurep 'ns)
-              (progn
-                (setq mac-option-modifier 'none)
-                (setq mac-command-modifier 'meta)))
+    (progn
+      (setq mac-option-modifier 'none)
+      (setq mac-command-modifier 'meta)))
 
 
 ;;; Buffer naming when visiting several files with the same name
@@ -165,6 +165,12 @@ It sets the transient map to all functions of ALIST."
 ;;; minibuffer.
 (setq help-at-pt-display-when-idle t)
 
+
+(use-package crux
+  :ensure t
+  :diminish crux-mode
+  :bind (("C-a" . crux-move-beginning-of-line)
+         ("C-^" . crux-top-join-lines)))
 
 ;;; Spelling
 (require 'flyspell)
@@ -589,21 +595,22 @@ otherwise run gnus to create such a buffer."
                  "mail-config"
                  "org-config"
                  ;"org-blog-config"
-                 "prog-config"))
+                 "prog-config"
+                 "sp-config"))
 
 
 
 
 (dolist (config configs)
   (message (format "loading %s" config))
-  (load (format "%s/%s" config-dir config)))
+  (load (format "%s/%s" config-dir config))
 
 
 
 
 
 ;;; Move customisations to their own file
-(setq custom-file "~/.emacs.d/custom.el")
+  (setq custom-file "~/.emacs.d/custom.el"))
 (load custom-file)
 
 

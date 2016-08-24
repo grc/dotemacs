@@ -13,6 +13,14 @@
 
 
 ;;; Extracting info from BBDB for form letters etc
+;;; use the textmerg package and the following LaTeX invocation:
+;;;
+;; \Fields{\firstname\surname-\address}
+;; \Merge{people.dat}{%
+;; form letter
+;; }
+;;
+;; The '-' after \surname meanns that address may or may not be present
 
 (defun grc-pexip-employees ()
   (interactive)
@@ -30,7 +38,8 @@
         (string-join
          (list
           (string-join (bbdb-address-streets home) latex-line-break)
-          (bbdb-address-city home))
+          (bbdb-address-city home)
+          (bbdb-address-postcode home))
          latex-line-break))))
 
 (defun grc-bbdb-name-address (record)
@@ -50,3 +59,17 @@ String is suitable for use as data with the LaTeX textmerg package"
 
 
 
+(defun grc-update-email-contact ()
+  "Updates records of all recipients with the time and subject of the email contact. 
+Intended to be called from message-send-hook"
+  (interactive)
+  (let 
+      ((annotation  (concat
+                     "<"
+                     (current-time-string)
+                     "> "
+                     (message-fetch-field "subject"))))
+    (bbdb-mua-annotate-recipients annotation
+                                  "contacted"
+                                  nil
+                                  'update)))
