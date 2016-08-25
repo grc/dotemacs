@@ -71,8 +71,11 @@
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 
 
-(require 'smartparens-config)
-(add-hook 'prog-mode-hook 'smartparens-mode)
+(use-package smartparens-config
+  :commands (smartparens-mode)
+  :ensure smartparens
+  :init
+  (add-hook 'prog-mode-hook 'smartparens-mode))
 
 ;; ;; Add hook to assorted lisp modes
 ;; (mapc (lambda (hook) (add-hook hook 'paredit-mode))

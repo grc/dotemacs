@@ -339,9 +339,9 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 	  (add-to-list 'Info-directory-list "~/git-repos.magit")))
 
 ;;; Magit
-(require 'magit)
-(global-set-key (kbd "<f5>") 'magit-status)
-
+(use-package magit
+  :ensure t
+  :bind ("<f5>" . magit-status))
 
 
 ;; Sunrise/Sunset stuff
@@ -541,9 +541,6 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
 
 
-
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
 
 
 ;;; Keymap stuff heavily inspired by http://endlessparentheses.com/the-toggle-map-and-wizardry.html
