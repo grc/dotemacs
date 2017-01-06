@@ -265,12 +265,17 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (add-hook 'text-mode-hook 'grc-text-hook)
 
 
+
+;; spotlight on OSX
+;; Uses the underlying spotlight data base to
+;; search. M-RET after initial search term allows you to narrow to a
+;; particular set of files.
+
+(use-package spotlight
+  :if (eq system-type 'darwin))
 
 
-
-
-
-
+
 ; Mark support in the presence of transient mark mode
 ; http://www.masteringemacs.org/articles/2010/12/22/fixing-mark-commands-transient-mark-mode/
 (defun push-mark-no-activate ()
@@ -495,6 +500,10 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 (setq save-abbrevs t)
 (setq-default abbrev-mode t)
+
+
+;; When killing a buffer, don't prompt for name, just kill this one
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 
 ;;; Use Symbola font for any characters not found in my default font:
