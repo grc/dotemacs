@@ -23,7 +23,7 @@
      (require 'org-capture)
      (require 'org-agenda)
      
-     (setq org-agenda-span 'day)
+     (setq org-agenda-span 8)
      (setq org-use-sub-superscripts nil)
      
      ;; Capture template
