@@ -28,6 +28,11 @@
 (setq message-forward-as-mime nil)
 
 
+;; Mail aliases.  Type e.g. ukrd SPC to get all the UK R&D team.
+
+(add-hook 'mail-setup-hook 'bbdb-mail-aliases)
+(add-hook 'message-setup-hook 'bbdb-mail-aliases)
+
 ;;; gnus-alias to select an identity to post as
 
 
@@ -145,11 +150,16 @@
   (use-hard-newlines)
   (add-hook 'after-change-functions 'my-mark-hard-newlines nil  t))
 
-(with-eval-after-load "message"
-  (add-hook 'message-mode-hook 'my-use-and-mark-hard-newlines))
+;; I've gone off hard new lines for the moment - replies are too hard
+;; to structure with quoted text.
+
+;(with-eval-after-load "message"
+;  (add-hook 'message-mode-hook 'my-use-and-mark-hard-newlines))
 
 
 
+(autoload 'cite-cite "cite" "A simple cite function for Emacs" nil)
+(setq message-cite-function 'cite-cite)
 
  ;; Demons
  
