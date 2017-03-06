@@ -29,10 +29,50 @@
                    (bbdb-search (bbdb-records) nil "Pexip Ltd"))
            "\n")))
 
-(defun grc-home-address (record)
-  (let* ((addrs (bbdb-record-address record))
-         (home (car (remove-if-not (lambda (a) (string= "home" (bbdb-address-label a)))
-                                   addrs)))
+(defun grc-pexip-ukrd ()
+  "Return records for all Pexip UK R&D people.
+R&D memberships is defined by the presence of the ukrd mail alias."
+  (interactive)
+  (bbdb-search (bbdb-records) nil nil nil
+               (cons 'mail-alias "ukrd")))
+
+
+(defun grc-pexip-rd ()
+  (bbdb-search (bbdb-records) nil nil nil
+                                 (cons 'group "r&d")))
+
+
+
+(defun grc-pexip-employees-postcodes ()
+  (interactive)
+  (insert (string-join
+           (mapcar #'grc-home-postcode-as-string
+                   (bbdb-search (bbdb-records) nil "Pexip Ltd"))
+           "\n")))
+
+(defun grc-home-address-p (address)
+  (string= "home" (bbdb-address-label address)))
+
+(defun grc-bbdb-home-address (record)
+  "Return the home address field if present, nil otherwise"
+  (car (remove-if-not #'grc-home-address-p
+                      (bbdb-record-address record))))
+
+
+(defun grc-home-postcode (record)
+  (let ((home (grc-bbdb-home-address record)))
+    (if home
+        (bbdb-address-postcode home))))
+
+(defun grc-home-postcode-as-string (record)
+  (let ((home (grc-bbdb-home-address record)))
+    (if home
+        (string-join
+         (list
+          (bbdb-address-postcode home))))))
+
+(defun grc-home-address-as-string (record)
+  (let ((home (grc-bbdb-home-address record))
          (latex-line-break "\\\\"))
     (if home
         (string-join
@@ -42,18 +82,26 @@
           (bbdb-address-postcode home))
          latex-line-break))))
 
-(defun grc-bbdb-name-address (record)
-  "Return a string containing the name and home address of the given record.
-String is suitable for use as data with the LaTeX textmerg package"
+(defun grc-insert-name-address (name)
+  "Insert name and address from BBDB"
+  (interactive "sName to search for: ")
+  (let ((recs(bbdb-search (bbdb-records) name)))
+    (assert (= 1 (length recs)) nil "Too many records found.")
+    (insert (grc-bbdb-name-address (car recs)))))
   
-  (let ((given-name (bbdb-record-firstname record))
-        (surname (bbdb-record-lastname record))
-        (home-address (grc-home-address record)))
-    (string-join (list given-name
-                       surname
-                       home-address
-                       " ") ;to give us a blank line
-                 "\n")))
+
+(defun grc-bbdb-name-address (record)
+    "Return a string containing the name and home address of the given record.
+String is suitable for use as data with the LaTeX textmerg package"
+    (assert (not (listp record)) nil "You have passed a list where a single record was expected.")
+    (let ((given-name (bbdb-record-firstname record))
+          (surname (bbdb-record-lastname record))
+          (home-address (grc-home-address-as-string record)))
+      (string-join (list given-name
+                         surname
+                         home-address
+                         " ") ;to give us a blank line
+                   "\n"))))
 
 
 
