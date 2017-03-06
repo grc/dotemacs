@@ -86,4 +86,7 @@
 
 
 
+;; org-reveal presentations
+(require 'ox-reveal)
+(setq org-reveal-root "file://../reveal.js-3.4.1")
 
