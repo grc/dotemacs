@@ -55,6 +55,7 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
@@ -348,6 +349,10 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   :ensure t
   :bind ("<f5>" . magit-status))
 
+;; Dictionary server stuff
+;; http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary
+(require 'sdcv-mode)
+(global-set-key (kbd "C-c d") 'sdcv-search)
 
 ;; Sunrise/Sunset stuff
 (require 'solar)
@@ -408,6 +413,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (require 'boxquote nil t) 
 
 
+(setq require-final-newline t)
 
 
 ;;; find-file-root: opening a file as root
@@ -628,3 +634,4 @@ otherwise run gnus to create such a buffer."
 
 
 ;;; init.el ends here
+(put 'timer-list 'disabled nil)
