@@ -38,18 +38,30 @@
 
 
 (require 'js2-mode)
-(require 'js-comint)
-;; Use node as our repl
-(setq inferior-js-program-command "node")
-(setenv "NODE_NO_READLINE" "1")
-(setq inferior-js-program-command "/usr/bin/java org.mozilla.javascript.tools.shell.Main")
-(add-hook 'js2-mode-hook '(lambda () 
-			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-			    (local-set-key "\C-cb" 'js-send-buffer)
-			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-			    (local-set-key "\C-cl" 'js-load-file-and-go)
-			    ))
+;; (require 'js-comint)
+;; ;; Use node as our repl
+;; (setq inferior-js-program-command "node")
+;; (setenv "NODE_NO_READLINE" "1")
+;; (add-hook 'js2-mode-hook '(lambda () 
+;; 			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+;; 			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+;; 			    (local-set-key "\C-cb" 'js-send-buffer)
+;; 			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+;; 			    (local-set-key "\C-cl" 'js-load-file-and-go)
+;; 			    ))
+
+(use-package skewer
+  :init
+  (add-hook 'js2-mode-hook 'skewer-mode))
+  
+
+
+(require 'simple-httpd)
+
+;;; httpd-start to run server
+;;; (setq httpd-root to set doc root)
+
+
 
 (require 'flymake-jslint)
 (add-hook 'js2-mode-hook 'flymake-jslint-load)
@@ -75,7 +87,8 @@
   :commands (smartparens-mode)
   :ensure smartparens
   :init
-  (add-hook 'prog-mode-hook 'smartparens-mode))
+  (add-hook 'prog-mode-hook 'smartparens-mode)
+  (add-hook 'slime-repl-mode-hook 'smartparens-mode))
 
 ;; ;; Add hook to assorted lisp modes
 ;; (mapc (lambda (hook) (add-hook hook 'paredit-mode))
