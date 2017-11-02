@@ -37,18 +37,26 @@
               "\n\n**  %?\n"
               :Empty-lines 1)
              ("d" "Dev notes" entry
-              (file "~/org/devnotes.org"
-                    "\n\n* %^{Title}\n%?"))
+              (file "~/org/devnotes.org")
+              "\n\n* %^{Title}    %^g\n%u\n\n%?"
+              :empty-lines 1)
+
+             ("s" "Sarah" entry
+              (file "~/org/sarah.org")
+              "\n\n* %^{Title}    %^g\n%u\n\n%?"
+              :empty-lines 1)
+
              ("w" "" entry ;; 'w' for 'org-protocol'
               (file+headline "www.org" "Notes")
               "* %^{Title}\n\n  Source: %u, %c\n\n  %i")))
 
+     (setq org-highlight-latex-and-related '(latex))
 
      (setq org-default-notes-file (concat org-directory "/notes.org"))
 
      (setq org-log-done 'time)
 
-
+     (setq org-latex-compiler "lualatex")
      ;; Make org-table mode available in email
      (add-hook 'message-mode-hook 'turn-on-orgtbl)
 
