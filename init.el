@@ -347,7 +347,11 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 ;;; Magit
 (use-package magit
   :ensure t
-  :bind ("<f5>" . magit-status))
+  :bind ("<f5>" . magit-status)
+  :config
+  (setq magit-repository-directories
+        '(("~/git-repos" . 1)
+          ("~/mcu" . 0))))
 
 ;; Dictionary server stuff
 ;; http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary
@@ -382,7 +386,11 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (add-hook 'message-mode-hook 'footnote-mode)
 
 
+;;; shell related stuff
 
+(use-package shell-pop
+  :ensure t
+  :bind ("<f9>" . shell-pop))
 ;;; eshell
 
 (autoload 'eshell "eshell")
@@ -606,7 +614,7 @@ otherwise run gnus to create such a buffer."
                  "erc-config"
                  "mail-config"
                  "org-config"
-                 ;"org-blog-config"
+                 "org-blog-config"
                  "prog-config"
                  "sp-config"))
 
