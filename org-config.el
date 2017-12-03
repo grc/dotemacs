@@ -46,9 +46,12 @@
               "\n\n* %^{Title}    %^g\n%u\n\n%?"
               :empty-lines 1)
 
-             ("w" "" entry ;; 'w' for 'org-protocol'
-              (file+headline "www.org" "Notes")
-              "* %^{Title}\n\n  Source: %u, %c\n\n  %i")))
+             ("w" "World accorging" entry 
+              (file "wag.org")
+                "\n\n* %^{Title}    %^g\n%u\n\n%?"
+              :empty-lines 1)
+              ))
+
 
      (setq org-highlight-latex-and-related '(latex))
 
@@ -65,7 +68,8 @@
      (org-babel-do-load-languages
       'org-babel-load-languages
       '((emacs-lisp . t)
-        (python . t))) 
+        (python . t)
+        (shell . t))) 
 
      (setq org-src-preserve-indentation t)
 
@@ -98,3 +102,10 @@
 (require 'ox-reveal)
 (setq org-reveal-root "file://../reveal.js-3.4.1")
 
+;; Org Publishing
+
+(setq org-publish-project-alist
+      '(("jujutsu" 
+         :base-directory "~/homers/jujutsu/org-based-site"
+         :publishing-directory "~/homers/jujutsu/org-exported-site"
+         :publishing-function org-html-publish-to-html)))
