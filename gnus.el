@@ -15,7 +15,7 @@
                 (nnimap-stream network)
                 (nnimap-port 143)
                 (nnimap-address "127.0.0.1"))
-        (nnimap "pexip"
+        (nnimap "newwork"
                 (nnimap-stream network)
                 (nnimap-port 143)
                 (nnimap-address "127.0.0.1"))
@@ -30,7 +30,6 @@
 
 ;; Mail aliases.  Type e.g. ukrd SPC to get all the UK R&D team.
 
-(add-hook 'mail-setup-hook 'bbdb-mail-aliases)
 (add-hook 'message-setup-hook 'bbdb-mail-aliases)
 
 ;;; gnus-alias to select an identity to post as
@@ -40,7 +39,7 @@
 
 (require 'gnus-alias)
 (setq gnus-alias-identity-alist 
-      '(("work"
+      '(("workacct"
 	 nil
 	 "giles@pexip.com"
 	 "Pexip"
@@ -51,8 +50,8 @@
 	 nil
 	 "giles@jujutsu.org.uk"
 	 nil
-	 ""
-	 "Giles")
+	 nil
+         "Giles")
 	("sjld"
 	 nil
 	 "giles@sjld.co.uk"
@@ -61,7 +60,7 @@
 	 "Giles")))
 
 (gnus-alias-init)
-(setq gnus-alias-default-identity "work")
+(setq gnus-alias-default-identity "workacct")
 (define-key message-mode-map [f8] 'gnus-alias-select-identity)
 
 
