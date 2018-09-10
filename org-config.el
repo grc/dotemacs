@@ -1,3 +1,14 @@
+;;; org-config.el --- Personalised org mode configuration
+
+;;; Commentary:
+;; Personalised configuration for org mode.  Covers mostly capture
+;; templates and the jujutsu website which is exported as HTML from an
+;; org mode project.  Org2blog configuration is handled by a separate
+;; file.
+
+
+;;; Code:
+
 (message "Initialising org-mode")
 
 
@@ -18,7 +29,7 @@
 
 ;;; After loading org-mode
 (eval-after-load 'org
-  '(progn 
+  '(progn
 
      (require 'org-capture)
      (require 'org-agenda)
@@ -41,16 +52,14 @@
               "\n\n* %^{Title}    %^g\n%u\n\n%?"
               :empty-lines 1)
 
-             ("s" "Sarah" entry
-              (file "~/org/sarah.org")
+             ("w" "Work" entry
+              (file "~/org/worknotes.org")
               "\n\n* %^{Title}    %^g\n%u\n\n%?"
               :empty-lines 1)
 
-             ("w" "World accorging" entry 
-              (file "wag.org")
-                "\n\n* %^{Title}    %^g\n%u\n\n%?"
-              :empty-lines 1)
-              ))
+             ("s" "Sarah" entry
+              (file "~/org/sarah.org")
+              "\n\n* %^{Title}    %^g\n%u\n\n%?" :empty-lines 1)))
 
 
      (setq org-highlight-latex-and-related '(latex))
@@ -69,7 +78,7 @@
       'org-babel-load-languages
       '((emacs-lisp . t)
         (python . t)
-        (shell . t))) 
+        (shell . t)))
 
      (setq org-src-preserve-indentation t)
 
@@ -82,30 +91,86 @@
      ))  ;; end of progn & eval after load
 
 
-;;; Simple calendar sync using external shell script
 
-(defun grc-org-update-calendar ()
-       (interactive)
-       (start-process "update-org-calendar"
-                      nil
-                      "/Users/grc/bin/update-org-calendar"))
+;;; TODO - replace my external script with org-gcal
 
 
-(defvar grc-org-calendar-update-timer 
-       (run-with-timer 1 (* 20 60) 'grc-org-update-calendar )
-       "Timer used to refresh org calendar from google calendar.")
+
+
+(use-package org-gcal
+  :ensure t
+  :config
+                                        ;TODO: Imoort secrets in org-gcal-secrets
+  (setq org-gcal-client-id (first (netrc-credentials "gcal"))
+        org-gcal-client-secret (second (netrc-credentials "gcal"))
+        org-gcal-file-alist '(("giles@pexip.com" .  "~/org/schedule.org")))
+  ;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+  ;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+  )
+
+;; (defun grc-org-update-calendar ()
+;;        (interactive)
+;;        (start-process "update-org-calendar"
+;;                       nil
+;;                       "/Users/grc/bin/update-org-calendar"))
+
+
+;; (defvar grc-org-calendar-update-timer
+;;        (run-with-timer 1 (* 20 60) 'grc-org-update-calendar )
+;;        "Timer used to refresh org calendar from google calendar.")
+
+;; (defvar grc-org-gcal-refresh
+;;        (run-with-timer 1 (* 20 60) 'org-gcal-refesh-token )
+;;        "Timer used to refresh org calendar from google calendar.")
 
 
 
 
 ;; org-reveal presentations
+
+;;; Commentary:
+;; 
+
 (require 'ox-reveal)
 (setq org-reveal-root "file://../reveal.js-3.4.1")
 
 ;; Org Publishing
 
+(setq jujutsu-base-dir "~/homers/jujutsu/org-site/src")
+(setq jujutsu-publish-dir "~/Sites/jujutsu")
 (setq org-publish-project-alist
-      '(("jujutsu" 
-         :base-directory "~/homers/jujutsu/org-based-site"
-         :publishing-directory "~/homers/jujutsu/org-exported-site"
-         :publishing-function org-html-publish-to-html)))
+      '(("jj-org-files"
+         :auto-sitemap t
+         :base-directory "~/homers/jujutsu/org-site/src"
+         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style1.css\" />"
+         :html-postamble "<p>Copyright &copy Giles Chamberlin 1985 - 2019</p>"
+         :publishing-directory "~/Sites/jujutsu"
+         :publishing-function org-html-publish-to-html
+         :recursive t
+         :with-toc nil
+         :section-numbers nil)
+        ("jj-css"
+         :base-directory "~/homers/jujutsu/org-site/src/css"
+         :base-extension "css"
+         :html-style nil
+         :publishing-directory  "~/Sites/jujutsu/css"
+         :publishing-function org-publish-attachment)
+        ("jj-images"
+         :base-directory "~/homers/jujutsu/org-site/src/images"
+         :base-extension any
+         :publishing-directory  "~/Sites/jujutsu/images"
+         :publishing-function org-publish-attachment)
+        ("jj-htaccess"
+         :base-directory "~/homers/jujutsu/org-site/src"
+         :base-extension "htaccess"
+         :publishing-directory  "~/Sites/jujutsu"
+         :publishing-function org-publish-attachment)
+
+        ("jujutsu"
+         :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
+
+
+
+(provide 'org-config)
+
+;;; org-config.el ends here
