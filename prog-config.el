@@ -1,11 +1,19 @@
-;;; prog-config.el
-;;; Programming modes
+;;; prog-config.el --- Personal configuration for programming modes
 
-;;; Rainbow delimiters: colour pmatching pairs of parentheses etc
-;;; Makes sense to turn this on wherever we have paredit mode enabled
+
+;;; Rainbow delimiters:
+;; colour pmatching pairs of parentheses etc Makes sense to turn this
+;; on wherever we have paredit mode enabled
+
+;;; Code:
+
 (global-prettify-symbols-mode 1)
 ;;; But if point is on the symbol, unprettify it
 (customize-set-value 'prettify-symbols-unprettify-at-point 'right-edge)
+
+
+;;; Commentary:
+;; 
 
 (require 'rainbow-delimiters)
 ;;; Colours are a bit too subtle by default so saturate them
@@ -38,11 +46,16 @@
 
 
 (require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+(use-package js2-refactor
+  :disabled)
+
 ;; (require 'js-comint)
 ;; ;; Use node as our repl
 ;; (setq inferior-js-program-command "node")
 ;; (setenv "NODE_NO_READLINE" "1")
-;; (add-hook 'js2-mode-hook '(lambda () 
+;; (add-hook 'js2-mode-hook '(lambda ()
 ;; 			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
 ;; 			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
 ;; 			    (local-set-key "\C-cb" 'js-send-buffer)
@@ -51,6 +64,7 @@
 ;; 			    ))
 
 (use-package skewer
+  :disabled
   :init
   (add-hook 'js2-mode-hook 'skewer-mode))
   
@@ -71,6 +85,8 @@
 (require 'eldoc)
 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
 
+(require 'checkdoc)
+(add-hook 'emacs-lisp-mode-hook 'checkdoc-minor-mode)
 
 (require 'elisp-slime-nav)
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
@@ -80,7 +96,7 @@
 ;;; Lisp
 
 (setq inferior-lisp-program "sbcl")
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq slime-contribs '(slime-fancy))
 
 
 (use-package smartparens-config
@@ -106,8 +122,8 @@
 ;;   ;; of useful key bindings, so fix that.  Similarly the `\' behaviour is
 ;;   ;; weird.
 ;;   (eval-after-load 'paredit
-;;     '(progn 
-;;        (define-key paredit-mode-map "\M-s" nil) 
+;;     '(progn
+;;        (define-key paredit-mode-map "\M-s" nil)
 ;;        (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
 ;;        (define-key paredit-mode-map "\\" nil))))
 
@@ -115,9 +131,9 @@
 
 
 ;;; Clojure
-(unless (package-installed-p 'cider)
-  (package-install 'cider))
-(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+;; (unless (package-installed-p 'cider)
+;;   (package-install 'cider))
+;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
 
 ;;; Puppet
@@ -126,3 +142,17 @@
   (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))
 
 
+
+;;; Documentation browser.
+
+;;; Helm dash provides an emacs interface to the dash documentation
+;;; sets for various languages.
+
+;; To actually load up a docset use helm-dash-activate-docset
+(use-package helm-dash
+  :bind (("C-c ?" . helm-dash)
+         ("C-c C-?" . helm-dash-at-point )))
+
+(provide 'prog-config)
+
+;;; prog-config.el ends here

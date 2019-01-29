@@ -10,6 +10,7 @@
 
 (setq erc-track-position-in-mode-line t)
 
+(setq erc-nick "sensen")
 
 ;; Clears out annoying erc-track-mode stuff for when we don't care.
 ;; Useful for when ChanServ restarts :P

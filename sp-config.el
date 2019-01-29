@@ -1,7 +1,8 @@
 ;;; smart-parens config
 
 (require 'smartparens-config)
-(add-hook 'prog-mode-hook 'smartparens-mode)
+(add-hook 'prog-mode-hook 'smartparens-strict-mode)
+
 
 
 (define-key smartparens-mode-map (kbd "C-M-f") 'sp-forward-sexp)
@@ -17,10 +18,10 @@
 (define-key smartparens-mode-map (kbd "C-M-t") 'sp-transpose-sexp)
 
 (define-key smartparens-mode-map (kbd "C-M-n") 'sp-next-sexp)
-(define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)
+(define-key smartparens-mode-map (kbd "C-M-p") 'sp-previous-sexp)             
 
 (define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
-(define-key smartparens-mode-map (kbd "C-M-w") 'sp-copy-sexp)
+(define-key smartparens-mode-map (kbd "C-M-w") 'sp-copy-sexp)             
 
 (define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
 (define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
@@ -40,4 +41,5 @@
 (define-key smartparens-mode-map (kbd "C-M-]") 'sp-select-next-thing)
 
 (define-key smartparens-mode-map (kbd "M-F") 'sp-forward-symbol)
-(define-key smartparens-mode-map (kbd "M-B") 'sp-backward-symbol)
+(define-key smartparens-mode-map (kbd "M-B") 'sp-backward-symbol)                            
+

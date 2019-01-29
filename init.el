@@ -1,14 +1,23 @@
 ;; init.el --- Emacs init file
 ;;; Code:
 (customize-set-variable 'inhibit-splash-screen t)
-
+;(setq confirm-kill-emacs t)
+(set-face-attribute 'default nil :family "Inconsolata" :height 110)
 
 (require 'server)
 (unless (server-running-p)
   (server-start))
 
 
-;;; Use new .el files in preference to older .elc
+
+;;; Impromptu backup of all files edited by emacs
+(setq version-control t
+      kept-old-versions 0
+      kept-new-versions 10
+      backup-directory-alist '(("." . ".bak"))) 
+
+
+;;; usebackup-directory-alist new .el files in preference to older .elc
 (setq load-prefer-newer t)
 
 ;;; Set up my load path
@@ -47,7 +56,7 @@
              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -62,8 +71,7 @@
 ;; having trouble installing the basic gnu package so let's disable
 ;; the checks
 (setq package-check-signature nil)
-
-(package-initialize)
+(when (version< emacs-version "27.0") (package-initialize))
 
 
 
@@ -127,10 +135,6 @@ It sets the transient map to all functions of ALIST."
 (require 'ag)                           ; grep on steroids
 
 
-;;; diminish is intended to remove various minor modes from the
-;;; mode-line listing
-(require 'diminish)
-
 
 ;;; Dired related functionality
 
@@ -142,6 +146,9 @@ It sets the transient map to all functions of ALIST."
   :ensure t
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
+
+(require 'dired+)
+
 
 ;;; Pretty Control-L
 ;;; Replace ^L with a pretty, and obvious, section
@@ -252,7 +259,8 @@ With prefix P, create local abbrev. Otherwise it will be global."
             (setq arg 0))
         (forward-word)))))
 
-;; Bind this to C-, in place of the usual flyspell-goto-next-error
+;; Bind this to C-, (that's Ctrl comma) in place of the usual
+;; flyspell-goto-next-error
 (bind-key* "C-," #'flyspell-goto-previous-error)
 
 
@@ -264,6 +272,33 @@ With prefix P, create local abbrev. Otherwise it will be global."
   (auto-fill-mode 1))
 
 (add-hook 'text-mode-hook 'grc-text-hook)
+
+
+
+
+;; readonly file issue on OSX
+(require 'time-stamp)
+
+(global-set-key (kbd "<f10>") 'dump-buffer-file-info)
+
+(defun dump-buffer-file-info ()
+  (interactive)
+  (let* ((file (buffer-file-name))
+         (attrs (file-attributes file)))
+    (if file
+      (with-temp-buffer
+        (insert (time-stamp-string)
+                " "
+                file
+                " "
+                (if (magit-file-tracked-p file)
+                    "git:true "
+                  "git:false ")
+                (format "History: %s"(-take 5 command-history))
+                "\n")
+        
+        (append-to-file nil nil "~/read-only-issue")))))
+
 
 
 
@@ -307,19 +342,19 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 
 ; http://emacswiki.org/emacs/InteractivelyDoThings
-(require 'ido)
-(ido-mode 'both)
-(setq ido-auto-merge-delay-time 999)
+;; (require 'ido)
+;; (ido-mode 'both)
+;; (setq ido-auto-merge-delay-time 999)
 
 
-;;; https://github.com/nonsequitur/smex/
-;;; Faster completion for M-p 
+;; ;;; https://github.com/nonsequitur/smex/
+;; ;;; Faster completion for M-p 
 
-(require 'smex)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+;; (require 'smex)
+;; (global-set-key (kbd "M-x") 'smex)
+;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; ;; This is your old M-x.
+;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
 
 
@@ -606,15 +641,62 @@ otherwise run gnus to create such a buffer."
   :config
   (projectile-global-mode))
 ;;; Load in other config
+
+
+;; URL of current active tab in Chrome
+;; OSX only as it uses OSA script
+
+(defun grc-chrome-url
+    (interactive)
+  (shell-command-to-string
+   "osascript -e 'tell application \"chrome\" to return URL of active tab of front window'"))
+
+
+
+
+(defun set-local-abbrevs (abbrevs)
+    "Add ABBREVS to `local-abbrev-table' and make it buffer local.
+     ABBREVS should be a list of abbrevs as passed to `define-abbrev-table'.
+     The `local-abbrev-table' will be replaced by a copy with the new 
+     abbrevs added, so that it is not the same as the abbrev table used
+     in other buffers with the same `major-mode'."
+    (let* ((bufname (buffer-name))
+           (prefix (substring (md5 bufname) 0 (length bufname)))
+           (tblsym (intern (concat prefix "-abbrev-table"))))
+      (set tblsym (copy-abbrev-table local-abbrev-table))
+      (dolist (abbrev abbrevs)
+          (define-abbrev (eval tblsym)
+            (car abbrev)
+            (cadr abbrev)
+            (caddr abbrev)))
+      (setq-local local-abbrev-table (eval tblsym))))
+
+;then use it like: (set-local-abbrevs '(("tc" "triangular clique" nil)))
+
+;; (require 'flycheck)
+;; ;; English language linter
+;; (flycheck-define-checker proselint
+;;   "A linter for prose."
+;;   :command ("proselint" source-inplace)
+;;   :error-patterns
+;;   ((warning line-start (file-name) ":" line ":" column ": "
+;; 	    (id (one-or-more (not (any " "))))
+;; 	    (message) line-end))
+;;   :modes (text-mode markdown-mode gfm-mode))
+
+;; (add-to-list 'flycheck-checkers 'proselint)
+
+
 
 (setq config-dir "~/.emacs.d")
 
 (setq configs '( "auctex-config"
                  "bbdb-config"
                  "erc-config"
+                 "helm-config"
                  "mail-config"
                  "org-config"
-                 "org-blog-config"
+                ; "org-blog-config"
                  "prog-config"
                  "sp-config"))
 
@@ -629,6 +711,8 @@ otherwise run gnus to create such a buffer."
 
 
 
+
+  
 ;;; Move customisations to their own file
   (setq custom-file "~/.emacs.d/custom.el"))
 (load custom-file)
