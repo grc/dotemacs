@@ -3,6 +3,8 @@
 ;;;  git://git.savannah.nongnu.org/bbdb.git
 
 (require 'bbdb-loaddefs)
+(require 'subr-x)
+
 (bbdb-initialize 'gnus 'message)
 
 (bbdb-mua-auto-update-init)
@@ -28,6 +30,13 @@
            (mapcar #'grc-bbdb-name-address
                    (bbdb-search (bbdb-records) nil "Pexip Ltd"))
            "\n")))
+(defun grc-pexip-ltd-names ()
+  (interactive)
+  (insert (string-join
+           (mapcar #'grc-bbdb-full-name
+                   (bbdb-search (bbdb-records) nil "Pexip Ltd"))
+           "\n")))
+
 
 (defun grc-pexip-ukrd ()
   "Return records for all Pexip UK R&D people.
@@ -88,7 +97,12 @@ R&D memberships is defined by the presence of the ukrd mail alias."
   (let ((recs(bbdb-search (bbdb-records) name)))
     (assert (= 1 (length recs)) nil "Too many records found.")
     (insert (grc-bbdb-name-address (car recs)))))
-  
+
+
+(defun grc-pexip-address-book ()
+  (interactive)
+  (mapcar #'grc-bbdb-addressbook-entry
+          (grc-pexip-employees)))
 
 (defun grc-bbdb-name-address (record)
     "Return a string containing the name and home address of the given record.
@@ -101,9 +115,31 @@ String is suitable for use as data with the LaTeX textmerg package"
                          surname
                          home-address
                          " ") ;to give us a blank line
-                   "\n"))))
+                   "\n")))
+
+(defun grc-bbdb-addressbook-entry (record)
+  (let ((given-name (bbdb-record-firstname record))
+          (surname (bbdb-record-lastname record))
+          (home-address (grc-home-address-as-string record))
+          (insert (string-join '("foo"
+                                 given-name
+                                 " "
+                                 surname
+                                 "\n"
+                                 home-address
+                                 "\n"))))))
 
 
+
+
+(defun grc-bbdb-full-name (record)
+  "Return a string containing the full name"
+    (assert (not (listp record)) nil "You have passed a list where a single record was expected.")
+    (let ((given-name (bbdb-record-firstname record))
+          (surname (bbdb-record-lastname record)))
+      (string-join (list given-name
+                         surname)
+                   " ")))
 
 
 
@@ -121,3 +157,16 @@ Intended to be called from message-send-hook"
                                   "contacted"
                                   nil
                                   'update)))
+
+(add-to-list 'bbdb-layout-alist '(short-email
+                                  (order  mail)
+                                  (primary . t)
+                                  (toggle . t)))
+
+
+(defun bbdb-display-record-short-email (record layout fields)
+  (let ((copy (copy-sequence record)))
+    (bbdb-record-set-field copy 'organization '(""))
+    (bbdb-display-record-one-line copy
+                                  layout
+                                  fields)))
