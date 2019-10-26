@@ -166,6 +166,10 @@
 (gnus-demon-add-handler 'gnus-demon-scan-mail 10 2)
 
 
+;; Pretty icons for gnus
+(require 'all-the-icons-gnus)
+(all-the-icons-gnus-setup)
+
 
 ;; Local Variables:
 ;; mode: emacs-lisp

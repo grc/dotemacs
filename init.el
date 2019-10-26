@@ -300,6 +300,19 @@ With prefix P, create local abbrev. Otherwise it will be global."
         (append-to-file nil nil "~/read-only-issue")))))
 
 
+
+;; Theme related stuff
+;; Experimenting with doom themes
+(require 'doom-themes)
+
+(load-theme 'doom-peacock t)
+(doom-themes-org-config)
+
+
+(use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode))
+
 
 
 ;; spotlight on OSX
