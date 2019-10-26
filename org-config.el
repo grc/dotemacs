@@ -171,6 +171,40 @@
 
 
 
+
+;; Allow <title> tag to be different from the pages <h1> Use
+;; #+HTML_HEAD_EXTRA: <title>foo bar</title> to specify the new title,
+;; advice and filter below will remove the original one.
+
+(defun my-meta-advice (orig-fun &rest args)
+  "Overwrite the <title> element in the html <head> section.
+‘grc-html-meta-title’ contains the new value.
+ORIG-FUN is expected to be `org-html--build-meta-info'.
+ARGS should be a one element list containing the info block."
+  (let* ((info (first args))
+         (orig-title (plist-get info :title))
+         (modified-args (plist-put info :title "delete me"))
+         (ret (apply orig-fun (list modified-args))))
+    (plist-put info :title orig-title)
+    ret))
+
+(advice-add 'org-html--build-meta-info :around #'my-meta-advice)
+
+(defun my-delete-html-title (text backend info)
+  "Remove title element.
+TEXT is the exported text, BACKEND the backend in use and INFO the communications block."
+       (when (org-export-derived-backend-p backend 'html)
+         (replace-regexp-in-string "^<title>delete me</title>$" "" text)))
+
+
+;; Consider using #+BIND in file to allow this functionality to be
+;; specified on a file by file basis rather than globally.
+
+(add-to-list 'org-export-filter-final-output-functions 'my-delete-html-title)
+
+
+
+
 (provide 'org-config)
 
 ;;; org-config.el ends here
