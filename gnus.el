@@ -32,9 +32,11 @@
 
 (add-hook 'message-setup-hook 'bbdb-mail-aliases)
 
+
+
+
+
 ;;; gnus-alias to select an identity to post as
-
-
 
 
 (require 'gnus-alias)
