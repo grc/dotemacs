@@ -276,6 +276,29 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
+;; Grammar - I'm experimenting with langtool
+
+(use-package langtool
+  :ensure t
+  :hook text-mode
+  :init  
+  (setq langtool-language-tool-jar
+        "/Users/grc/LanguageTool/languagetool-commandline.jar")  
+  (setq langtool-default-language "en-GB")
+  ;; Disable following rules:
+  ;; - WHITESPACE - I'm happy with double spaces after a full stop.
+  ;; - WORD_CONTAINS_UNDERSCORE - org mode variables
+  ;; - MORFOLOGIK - Devolve spelling to flyspell
+  ;; - QUOTES - LaTeX
+  ;; Note documentation for format of this variable is poor
+  ;; see https://github.com/mhayashi1120/Emacs-langtool/issues/34
+  (setq langtool-user-arguments
+        '("--disable"  "WHITESPACE_RULE,WORD_CONTAINS_UNDERSCORE,MORFOLOGIK_RULE_EN_GB,EN_QUOTES"
+          "--languagemodel" "/Users/grc/LanguageTool/ngrams-en-20150817"))
+)
+
+
+
 ;; readonly file issue on OSX
 (require 'time-stamp)
 
