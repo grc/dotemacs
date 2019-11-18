@@ -30,7 +30,7 @@
 ;;; After loading org-mode
 (eval-after-load 'org
   '(progn
-
+ 
      (require 'org-capture)
      (require 'org-agenda)
      
@@ -143,10 +143,11 @@
       '(("jj-org-files"
          :auto-sitemap t
          :base-directory "~/homers/jujutsu/org-site/src"
-         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style1.css\" />"
+         :html-doctype "html5"
+         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap.css\" />"
          :html-postamble "<p>Copyright &copy Giles Chamberlin 1985 - 2019</p>"
          :publishing-directory "~/Sites/jujutsu"
-         :publishing-function org-html-publish-to-html
+         :publishing-function org-jujutsu-site-publish-to-html
          :recursive t
          :with-toc nil
          :section-numbers nil)
@@ -202,6 +203,18 @@ TEXT is the exported text, BACKEND the backend in use and INFO the communication
 ;; specified on a file by file basis rather than globally.
 
 (add-to-list 'org-export-filter-final-output-functions 'my-delete-html-title)
+
+
+;; Arbitrary  HTML5 BEGIN_foo blocks 
+(setq org-html-html5-fancy t)
+
+;;; Org Latex Export
+
+;; Allow line breaks in URLs
+(add-to-list 'org-latex-default-packages-alist "\\PassOptionsToPackage{hyphens}{url}")
+
+;; Get rid of the hyperref config so I can use LATEX_HEADER bloacks to specify via \hypersetup
+(setq org-latex-hyperref-template nil)
 
 
 
