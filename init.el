@@ -138,6 +138,13 @@ It sets the transient map to all functions of ALIST."
 
 ;;; Dired related functionality
 
+;; First off we'll set it up to use gnu `ls' on Macs as the default
+;; `ls' does not support the `--dired' option.
+(if (eq system-type 'darwin)
+    (with-demoted-errors "Couldn't find GNU ls %s"
+      (call-process "gls" nil 0)
+      (setq insert-directory-program "gls")))
+
 (require 'dired-x)
 
 ;; Narrow dired to match a filter.
