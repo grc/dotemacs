@@ -632,7 +632,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (require 'pexip)
 (defconst pexip-production "10.47.2.49"
   "Address of management node of production MCU")
-(global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
+; (global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
 
 
 
