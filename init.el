@@ -1,56 +1,12 @@
 ;; init.el --- Emacs init file
+
+
+
 ;;; Code:
-(customize-set-variable 'inhibit-splash-screen t)
-;(setq confirm-kill-emacs t)
-(set-face-attribute 'default nil :family "Inconsolata" :height 110)
-
-(require 'server)
-(unless (server-running-p)
-  (server-start))
-
-
-
-;;; Impromptu backup of all files edited by emacs
-(setq version-control t
-      kept-old-versions 0
-      kept-new-versions 10
-      backup-directory-alist '(("." . ".bak"))) 
-
-
-;;; usebackup-directory-alist new .el files in preference to older .elc
-(setq load-prefer-newer t)
-
-;;; Set up my load path
-(add-to-list 'load-path "~/elisp")
-
-(let ((default-directory "~/elisp"))
-  (normal-top-level-add-subdirs-to-load-path))
-
-
-
-
-;;; If using the nextstep build, set modifiers to match what I'm used
-;;; to under X11.
-(if (featurep 'ns)
-    (progn
-      (setq mac-option-modifier 'none)
-      (setq mac-command-modifier 'meta)))
-
-
-;;; Buffer naming when visiting several files with the same name
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-
-(setq-default indent-tabs-mode nil)
-(setq visible-bell t)
-(put 'narrow-to-region 'disabled nil)
-(set-mouse-color "white")
-
-
-
-
 
 ;;; Move to the 21st Century and adopt package management
+(require 'use-package)
+
 (require 'package)
 (add-to-list 'package-archives
              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
@@ -76,6 +32,66 @@
 
 
 
+
+(customize-set-variable 'inhibit-splash-screen t)
+(setq confirm-kill-emacs 'y-or-n-p)
+(set-face-attribute 'default nil :family "Inconsolata" :height 110)
+
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+
+
+;;; Impromptu backup of all files edited by emacs
+(setq version-control 'never
+      kept-old-versions 0
+      kept-new-versions 10
+      backup-directory-alist '(("." . ".bak"))) 
+
+
+;;; usebackup-directory-alist new .el files in preference to older .elc
+(setq load-prefer-newer t)
+
+;;; Set up my load path
+(add-to-list 'load-path "~/elisp")
+(add-to-list 'load-path "/Users/grc/personal/jujutsu/org-site/elisp")
+
+(let ((default-directory "~/elisp"))
+  (normal-top-level-add-subdirs-to-load-path))
+
+
+
+
+
+
+;;; If using the nextstep build, set modifiers to match what I'm used
+;;; to under X11.
+(if (featurep 'ns)
+    (progn
+      (setq mac-option-modifier 'none)
+      (setq mac-command-modifier 'meta)))
+
+
+;;; Buffer naming when visiting several files with the same name
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+(setq-default indent-tabs-mode nil)
+(setq visible-bell t)
+(put 'narrow-to-region 'disabled nil)
+(set-mouse-color "white")
+
+
+
+
+
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+(setq exec-path (append exec-path '("/opt/local/Library/Frameworks/Python.framework/Versions/3.7/bin")))
+
 ;;; For some reason, calc out of the box gives multiplication a higher
 ;;; precedence than division so 10/2*5 = 1.  This is at variance with
 ;;; the BODMAS rule I learnt at school. Explanation of the vagaries
@@ -92,6 +108,14 @@
 
 (require 'hippie-exp)
 (global-set-key "\M-/" 'hippie-expand)
+
+
+
+(defun date (arg)
+  (interactive "P")
+  (insert (if arg
+              (format-time-string "%Y-%m-%d")
+            (format-time-string "%e %B %Y"))))
 
 
 ;; yasnippet
@@ -136,26 +160,30 @@ It sets the transient map to all functions of ALIST."
 
 
 
-;;; Dired related functionality
+;; ;;; Dired related functionality
 
-;; First off we'll set it up to use gnu `ls' on Macs as the default
-;; `ls' does not support the `--dired' option.
-(if (eq system-type 'darwin)
-    (with-demoted-errors "Couldn't find GNU ls %s"
-      (call-process "gls" nil 0)
-      (setq insert-directory-program "gls")))
+;; ;; First off we'll set it up to use gnu `ls' on Macs as the default
+;; ;; `ls' does not support the `--dired' option.
+;; (if (eq system-type 'darwin)
+;;     (with-demoted-errors "Couldn't find GNU ls %s"
+;;       (call-process "gls" nil 0)
+;;       (setq insert-directory-program "gls")))
 
-(require 'dired-x)
+;; (require 'dired-x)
 
-;; Narrow dired to match a filter.
-;; Restore the original buffer with `g'
-(use-package dired-narrow
-  :ensure t
-  :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
+;; ;; Narrow dired to match a filter.
+;; ;; Restore the original buffer with `g'
+;; (use-package dired-narrow
+;;   :ensure t
+;;   :bind (:map dired-mode-map
+;;               ("/" . dired-narrow)))
 
-(require 'dired+)
+;; (require 'dired+)
 
+
+
+;(use-package all-the-icons-dired
+;  :hook dired-mode)
 
 ;;; Pretty Control-L
 ;;; Replace ^L with a pretty, and obvious, section
@@ -285,24 +313,24 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 ;; Grammar - I'm experimenting with langtool
 
-(use-package langtool
-  :ensure t
-  :hook text-mode
-  :init  
-  (setq langtool-language-tool-jar
-        "/Users/grc/LanguageTool/languagetool-commandline.jar")  
-  (setq langtool-default-language "en-GB")
-  ;; Disable following rules:
-  ;; - WHITESPACE - I'm happy with double spaces after a full stop.
-  ;; - WORD_CONTAINS_UNDERSCORE - org mode variables
-  ;; - MORFOLOGIK - Devolve spelling to flyspell
-  ;; - QUOTES - LaTeX
-  ;; Note documentation for format of this variable is poor
-  ;; see https://github.com/mhayashi1120/Emacs-langtool/issues/34
-  (setq langtool-user-arguments
-        '("--disable"  "WHITESPACE_RULE,WORD_CONTAINS_UNDERSCORE,MORFOLOGIK_RULE_EN_GB,EN_QUOTES"
-          "--languagemodel" "/Users/grc/LanguageTool/ngrams-en-20150817"))
-)
+;; (use-package langtool
+;;   :ensure t
+;;   ;:hook text-mode
+;;   :init  
+;;   (setq langtool-language-tool-jar
+;;         "/Users/grc/LanguageTool/languagetool-commandline.jar")  
+;;   (setq langtool-default-language "en-GB")
+;;   ;; Disable following rules:
+;;   ;; - WHITESPACE - I'm happy with double spaces after a full stop.
+;;   ;; - WORD_CONTAINS_UNDERSCORE - org mode variables
+;;   ;; - MORFOLOGIK - Devolve spelling to flyspell
+;;   ;; - QUOTES - LaTeX
+;;   ;; Note documentation for format of this variable is poor
+;;   ;; see https://github.com/mhayashi1120/Emacs-langtool/issues/34
+;;   (setq langtool-user-arguments
+;;         '("--disable"  "WHITESPACE_RULE,WORD_CONTAINS_UNDERSCORE,MORFOLOGIK_RULE_EN_GB,EN_QUOTES"
+;;           "--languagemodel" "/Users/grc/LanguageTool/ngrams-en-20150817"))
+;; )
 
 
 
@@ -350,8 +378,8 @@ With prefix P, create local abbrev. Otherwise it will be global."
 ;; search. M-RET after initial search term allows you to narrow to a
 ;; particular set of files.
 
-(use-package spotlight
-  :if (eq system-type 'darwin))
+;(use-package spotlight
+;  :if (eq system-type 'darwin))
 
 
 
@@ -731,6 +759,18 @@ otherwise run gnus to create such a buffer."
 
 
 
+;; recent files
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
+
+;; Save file list every 5 minutes, without echoing save message
+(run-at-time nil (* 5 60)
+             (lambda ()
+               (let ((save-silently t))
+                 (recentf-save-list))))
+
+
 (setq config-dir "~/.emacs.d")
 
 (setq configs '( "auctex-config"
@@ -770,3 +810,4 @@ otherwise run gnus to create such a buffer."
 
 ;;; init.el ends here
 (put 'timer-list 'disabled nil)
+(put 'downcase-region 'disabled nil)
