@@ -6,6 +6,10 @@
 
 ;;; Move to the 21st Century and adopt package management
 (require 'use-package)
+(require 'general)   
+
+(eval-when-compile (require 'use-package))
+(setq use-package-compute-statistics t)
 
 (require 'package)
 (add-to-list 'package-archives
