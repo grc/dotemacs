@@ -7,19 +7,25 @@
 (setq gnus-summary-line-format "%U%R%z%d%I%(%[%4L: %-23,23f%]%) %s\n")
 
 
-(setq gnus-select-method '(nntp "news.gmane.org"))
+;; (setq gnus-select-method
+;;       '(nnimap "newwork"
+;;                                   (nnimap-stream network)
+;;                                   (nnimap-port 143)
+;;                                   (nnimap-address "127.0.0.1")
+;;                                   (nnimap-record-commands t)))
 
 
-(setq gnus-secondary-select-methods
-      '((nnimap "jujutsu"
-                (nnimap-stream network)
-                (nnimap-port 143)
-                (nnimap-address "127.0.0.1"))
-        (nnimap "newwork"
-                (nnimap-stream network)
-                (nnimap-port 143)
-                (nnimap-address "127.0.0.1"))
-        (nntp "news.gmane.org")))
+(setq gnus-select-method
+      '(nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+	       (nnimap-server-port "imaps")
+	       (nnimap-stream ssl)))
+
+;; (setq gnus-secondary-select-methods
+;;       '((nnimap "jujutsu"
+;;                 (nnimap-stream network)
+;;                 (nnimap-port 143)
+;;                 (nnimap-address "127.0.0.1"))))
 
 
 
@@ -74,15 +80,15 @@
 ;;; ical integration 
 
 
-(add-to-list 'load-path "~/git-repos/ical-event")
-(require 'gnus-calendar)
-(gnus-calendar-setup)
+;(add-to-list 'load-path "~/git-repos/ical-event")
+;(require 'gnus-calendar)
+;(gnus-calendar-setup)
     
 ;; to enable optional iCalendar->Org sync functionality
 ;; NOTE: both the capture file and the headline(s) inside must already exist
-(setq gnus-calendar-org-capture-file "~/org/notes.org")
-(setq gnus-calendar-org-capture-headline '("Calendar"))
-(gnus-calendar-org-setup)
+;(setq gnus-calendar-org-capture-file "~/org/notes.org")
+;(setq gnus-calendar-org-capture-headline '("Calendar"))
+;(gnus-calendar-org-setup)
 
 (setq gnus-treat-mail-gravatar 'head)
 
@@ -171,6 +177,7 @@
 ;; Pretty icons for gnus
 (require 'all-the-icons-gnus)
 (all-the-icons-gnus-setup)
+
 
 
 ;; Local Variables:
