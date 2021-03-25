@@ -360,11 +360,26 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 ;; Theme related stuff
-;; Experimenting with doom themes
-(require 'doom-themes)
 
-(load-theme 'doom-peacock t)
-(doom-themes-org-config)
+
+;; I was experimenting with doom themes, but have currently moved over to modus-vivendi
+;(require 'doom-themes)
+
+;(load-theme 'doom-peacock t)
+;(doom-themes-org-config)
+
+
+;; Modus themes are documented at https://protesilaos.com/modus-themes/
+(use-package modus-themes
+  :ensure
+  
+  :init
+  ; add any customisations before loading the themes
+  (modus-themes-load-themes)
+  
+  :config
+  (modus-themes-load-vivendi))
+
 
 
 (use-package doom-modeline
