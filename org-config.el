@@ -24,43 +24,7 @@
    ("\C-cc" . org-capture))
   
   :config
-  (setq org-latex-hyperref-template nil  ; Get rid of the hyperref
-                                         ; config so I can use
-                                         ; LATEX_HEADER blocks to
-                                         ; specify via \hypersetup
-        org-publish-project-alist
-        '(("jj-org-files"
-           :auto-sitemap t
-           :base-directory "~/personal/jujutsu/org-site/src"
-           :html-doctype "html5"
-           :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap.css\" />"
-           :html-head-include-default-style nil
-           :html-head-include-scripts nil
-           :html-postamble nil
-           :publishing-directory "~/Sites/jujutsu"
-           :publishing-function org-jujutsu-site-publish-to-html
-           :recursive t
-           :with-toc nil
-           :section-numbers nil)
-          ("jj-css"
-           :base-directory "~/personal/jujutsu/org-site/src/css"
-           :base-extension "css"
-           :html-style nil
-           :publishing-directory  "~/Sites/jujutsu/css"
-           :publishing-function org-publish-attachment)
-          ("jj-images"
-           :base-directory "~/personal/jujutsu/org-site/src/images"
-           :base-extension any
-           :publishing-directory  "~/Sites/jujutsu/images"
-           :publishing-function org-publish-attachment)
-          ("jj-htaccess"
-           :base-directory "~/personal/jujutsu/org-site/src"
-           :base-extension "htaccess"
-           :publishing-directory  "~/Sites/jujutsu"
-           :publishing-function org-publish-attachment)
-
-          ("jujutsu"
-           :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
+  (setq org-src-window-setup ‘current-window)
   
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -69,11 +33,11 @@
      (python . t)
      (shell . t)))
 
+  ;; See  https://zge.us.to/emacs-style.html#fn10 for advice on not using setq in :config
   :custom
   (org-babel-tangle-lang-exts '(("clojure" . "clj")
                                 ("emacs-lisp" . "el")
                                 ("python" . "py")))
-   
   (org-capture-templates
    '(("t" "Scheduled task" entry
       (file "")
@@ -88,6 +52,17 @@
       "\n\n* %^{Title}    %^g\n%u\n\n%?"
       :empty-lines 1)
 
+     ("f" "Financial notes" entry
+      (file "~/personal/financial/financial-notes.org")
+      "\n\n* %^{Title}    %^g\n%u\n\n%?"
+      :empty-lines 1)
+
+     ("i" "Investigation task" entry
+      (file "~/org/investigate.org")
+      "\n\n** TODO %^{Title?}\n%?"
+      :empty-lines 1)
+
+     
      ("w" "Work" entry
       (file "~/org/worknotes.org")
       "\n\n* %^{Title}    %^g\n%u\n\n%?"
@@ -96,6 +71,11 @@
      ("s" "Sarah" entry
       (file "~/org/sarah.org")
       "\n\n* %^{Title}    %^g\n%u\n\n%?" :empty-lines 1)
+
+     ("h" "Handover" entry
+      (file "~/org/handover.org")
+      "\n\n* %^{Title}    \n%u\n\n%?" :empty-lines 1)
+     
      
      ("p" "Protocol" entry
       (file "~/org/capture.org")
@@ -103,14 +83,50 @@
      
      ("L" "Protocol Link" entry
       (file "~/org/capture.org")
-      "* %? [[%:link][%:description]] \nCaptured On: %U")))
+      "* %? [[%:link][%:description]] \nCaptured On: %U"))) 
   (org-default-notes-file "~/org/notes.org")
+  
   (org-highlight-latex-and-related '(latex))
   (org-html-html5-fancy   t)
   (org-latex-compiler "lualatex")
-  (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+                                        ; Get rid of the hyperref  config so I can use  LATEX_HEADER blocks to  specify via \hypersetup
+  (org-latex-hyperref-template nil)
+  (org-publish-project-alist
+   '(("jj-org-files"
+      :auto-sitemap t
+      :base-directory "~/personal/jujutsu/org-site/src"
+      :html-doctype "html5"
+      :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/bootstrap.css\" />"
+      :html-head-include-default-style nil
+      :html-head-include-scripts nil
+      :html-postamble nil
+      :publishing-directory "~/Sites/jujutsu"
+      :publishing-function org-jujutsu-site-publish-to-html
+      :recursive t
+      :with-toc nil
+      :section-numbers nil)
+     ("jj-css"
+      :base-directory "~/personal/jujutsu/org-site/src/css"
+      :base-extension "css"
+      :html-style nil
+      :publishing-directory  "~/Sites/jujutsu/css"
+      :publishing-function org-publish-attachment)
+     ("jj-images"
+      :base-directory "~/personal/jujutsu/org-site/src/images"
+      :base-extension any
+      :publishing-directory  "~/Sites/jujutsu/images"
+      :publishing-function org-publish-attachment)
+     ("jj-htaccess"
+      :base-directory "~/personal/jujutsu/org-site/src"
+      :base-extension "htaccess"
+      :publishing-directory  "~/Sites/jujutsu"
+      :publishing-function org-publish-attachment)
 
-  :mode "\\.org\\'")
+     ("jujutsu"
+      :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
+  (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))))
+
+:mode "\\.org\\'"
 
 (use-package ox-beamer)
 (use-package org-protocol)
