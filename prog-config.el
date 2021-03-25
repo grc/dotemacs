@@ -44,7 +44,7 @@
 
 
 ;;; Python
-(setq python-shell-interpreter "python3.7")
+(setq python-shell-interpreter "python3")
 (add-hook 'python-mode-hook 'blacken-mode)
 
 
