@@ -24,7 +24,8 @@
    ("\C-cc" . org-capture))
   
   :config
-  (setq org-src-window-setup ‘current-window)
+  (setq 
+        org-src-window-setup ‘current-window)
   
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -33,12 +34,14 @@
      (python . t)
      (shell . t)))
 
+  (setq org-babel-python-command "python3")
+
   ;; See  https://zge.us.to/emacs-style.html#fn10 for advice on not using setq in :config
   :custom
   (org-babel-tangle-lang-exts '(("clojure" . "clj")
                                 ("emacs-lisp" . "el")
                                 ("python" . "py")))
-  (org-capture-templates
+  (org-capture-templates                
    '(("t" "Scheduled task" entry
       (file "")
       "\n\n** TODO %^{Title?}\nSCHEDULED: <%<%Y-%m-%d %a>>\nContext: %a\n%?"
@@ -53,7 +56,7 @@
       :empty-lines 1)
 
      ("f" "Financial notes" entry
-      (file "~/personal/financial/financial-notes.org")
+      (file "~/personal/financial/fin-notes.org")
       "\n\n* %^{Title}    %^g\n%u\n\n%?"
       :empty-lines 1)
 
@@ -84,8 +87,10 @@
      ("L" "Protocol Link" entry
       (file "~/org/capture.org")
       "* %? [[%:link][%:description]] \nCaptured On: %U"))) 
+
   (org-default-notes-file "~/org/notes.org")
-  
+
+  (org-log-done 'time)
   (org-highlight-latex-and-related '(latex))
   (org-html-html5-fancy   t)
   (org-latex-compiler "lualatex")
@@ -128,13 +133,15 @@
 
 :mode "\\.org\\'"
 
-(use-package ox-beamer)
+(use-package ox-beamer
+  :after org-mode)
+
 (use-package org-protocol)
 (use-package helm-org-rifle)
 
 
 (use-package org-gcal
-  :ensure t
+  :after org-mode
   :config
   (setq org-gcal-client-id (first (netrc-credentials "gcal"))
         org-gcal-client-secret (second (netrc-credentials "gcal"))
@@ -191,8 +198,43 @@
 
 
 
-;;; Org Koma letter export
-(eval-after-load 'ox '(require 'ox-koma-letter))
+
+;; org-roan
+(use-package org-roam
+  :after org
+  
+  :custom
+  (org-roam-directory "~/brain")
+  :bind
+  ("C-c n l" . org-roam-buffer-toggle)
+  ("C-c n f" . org-roam-node-find)
+  (:map org-mode-map
+        (("C-c n i" . org-roam-node-insert)))
+  :config
+  (setq org-roam-capture-templates '(("d" "default" plain "%?"
+                                      :if-new (file+head "${slug}.org"
+                                                         "#+TITLE: ${title}\n#+DATE: %T\n")
+                                      :unnarrowed t)))
+  ;; this sets up various file handling hooks so your DB remains up to date
+  (org-roam-setup))
+
+
+
+(use-package org-ref
+  :config
+  (setq reftex-default-bibliography '("~/bibliography/references.bib"))
+
+        ;; see org-ref for use of these variables
+        (setq org-ref-bibliography-notes "~/bibliography/notes.org"
+              org-ref-default-bibliography '("~/bibliography/references.bib")
+              org-ref-pdf-directory "~/bibliography/bibtex-pdfs/"))
+
+
+
+(use-package helm-bibtex
+  :config
+  (setq bibtex-completion-bibliography "~/bibliography/references.bib")
+  (setq bibtex-completion-notes-path "~/bibliography/notes"))
 
 (provide 'org-config)
 

@@ -15,17 +15,17 @@
 ;;                                   (nnimap-record-commands t)))
 
 
-(setq gnus-select-method
-      '(nnimap "gmail"
-	       (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
-	       (nnimap-server-port "imaps")
-	       (nnimap-stream ssl)))
+;; (setq gnus-select-method
+;;       '(nnimap "gmail"
+;; 	       (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+;; 	       (nnimap-server-port "imaps")
+;; 	       (nnimap-stream ssl)))
 
-;; (setq gnus-secondary-select-methods
-;;       '((nnimap "jujutsu"
-;;                 (nnimap-stream network)
-;;                 (nnimap-port 143)
-;;                 (nnimap-address "127.0.0.1"))))
+(setq gnus-select-method
+      '(nnimap "jujutsu"
+                 (nnimap-stream network)
+                 (nnimap-port 143)
+                 (nnimap-address "127.0.0.1")))
 
 
 

@@ -43,6 +43,13 @@
 
 
 
+;; C families
+
+(add-hook 'c-mode-common-hook
+  (lambda() 
+    (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
+
+
 ;;; Python
 (setq python-shell-interpreter "python3")
 (add-hook 'python-mode-hook 'blacken-mode)
@@ -72,30 +79,18 @@ the current directory in Python's search path."
 (use-package js2-refactor
   :disabled)
 
-;; (require 'js-comint)
-;; ;; Use node as our repl
-;; (setq inferior-js-program-command "node")
-;; (setenv "NODE_NO_READLINE" "1")
-;; (add-hook 'js2-mode-hook '(lambda ()
-;; 			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-;; 			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-;; 			    (local-set-key "\C-cb" 'js-send-buffer)
-;; 			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-;; 			    (local-set-key "\C-cl" 'js-load-file-and-go)
-;; 			    ))
-
-  
 
 
+(use-package flymake-jslint
+  :disabled
+  :hook js2-mode)
 
-
-(require 'flymake-jslint)
-(add-hook 'js2-mode-hook 'flymake-jslint-load)
 
 
 ;;; Emacs Lisp
-(require 'eldoc)
-(add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+(use-package eldoc
+  :hook emacs-lisp-mode)
+
 
 (require 'checkdoc)
 (add-hook 'emacs-lisp-mode-hook 'checkdoc-minor-mode)
@@ -111,47 +106,21 @@ the current directory in Python's search path."
 (setq slime-contribs '(slime-fancy))
 
 
-(use-package smartparens-config
-  :commands (smartparens-mode)
-  :ensure smartparens
-  :init
-  (add-hook 'prog-mode-hook 'smartparens-mode)
-  (add-hook 'slime-repl-mode-hook 'smartparens-mode))
+;(use-package racket-mode)
 
-;; ;; Add hook to assorted lisp modes
-;; (mapc (lambda (hook) (add-hook hook 'paredit-mode))
-;;       '(clojure-mode-hook
-;; 	slime-repl-mode-hook
-;; 	emacs-lisp-mode-hook
-;; 	ielm-mode-hook))
-
-;; (when (locate-library "paredit")
-;;   (autoload 'paredit-mode "paredit"
-;;     "Turn on pseudo-structural editing of Lisp code."
-;;     t)
-
-;;   ;; By default paredit-splice-sexp is bount to M-s which stomps on a lot
-;;   ;; of useful key bindings, so fix that.  Similarly the `\' behaviour is
-;;   ;; weird.
-;;   (eval-after-load 'paredit
-;;     '(progn
-;;        (define-key paredit-mode-map "\M-s" nil)
-;;        (define-key paredit-mode-map "\C-cs" 'paredit-splice-sexp)
-;;        (define-key paredit-mode-map "\\" nil))))
+;(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+;(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 
 
 
-
-;;; Clojure
-;; (unless (package-installed-p 'cider)
-;;   (package-install 'cider))
-;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
-
-;;; Puppet
-(when (locate-library "puppet-mode")
-  (autoload 'puppet-mode "puppet-mode")
-  (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode)))
+;;; Clojure Experiments
+
+;; (use-package clojure-mode)
+
+;(use-package cider)
+
+
 
 
 

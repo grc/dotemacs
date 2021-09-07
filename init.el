@@ -4,27 +4,28 @@
 
 ;;; Code:
 
-;;; Move to the 21st Century and adopt package management
-(require 'use-package)
 (require 'general)   
 
 (eval-when-compile (require 'use-package))
 (setq use-package-compute-statistics t)
+(require 'bind-key)
 
+;;; Move to the 21st Century and adopt package management
 (require 'package)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+;; (add-to-list 'package-archives
+;;              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
 
+
+;; ;; (add-to-list 'package-archives
+;; ;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
@@ -66,8 +67,19 @@
 
 
 
+;; If you have the luxury of both DEL and BACKSPACE keys, take
+;; advantage of them: DEL deletes forwards.
+(global-set-key [delete] 'delete-char)
+(global-set-key [M-delete] 'kill-word)
 
-
+;; Use the INSERT key for something useful: it's mapped to [help].
+(when (eq system-type 'darwin)
+  ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
+  ;; copy ctrl-insert, paste shift-insert on windows keyboard
+  (global-set-key [C-help] #'clipboard-kill-ring-save)
+  (global-set-key [S-help] #'clipboard-yank)
+  ;; insert to toggle `overwrite-mode'
+  (global-set-key [help] #'overwrite-mode))
 
 ;;; If using the nextstep build, set modifiers to match what I'm used
 ;;; to under X11.
@@ -86,10 +98,8 @@
 (put 'narrow-to-region 'disabled nil)
 (set-mouse-color "white")
 
-
-
-
-
+;; (use-package unpackaged
+;;   :after (general))
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -153,41 +163,11 @@ It sets the transient map to all functions of ALIST."
                       ("g" . text-scale-increase))))
 
 
-;;; zsh, my normal default, doesn't work at all nicely in emacs'
-;;; shell: the completion menu isn't displayed, the right hand prompt
-;;; fails etc. Use something more conservative if using M-x shell:
-(setq explicit-shell-file-name "/bin/bash")
-
-
 (defalias 'yes-or-no-p 'y-or-n-p)
+
 (require 'ag)                           ; grep on steroids
 
 
-
-;; ;;; Dired related functionality
-
-;; ;; First off we'll set it up to use gnu `ls' on Macs as the default
-;; ;; `ls' does not support the `--dired' option.
-;; (if (eq system-type 'darwin)
-;;     (with-demoted-errors "Couldn't find GNU ls %s"
-;;       (call-process "gls" nil 0)
-;;       (setq insert-directory-program "gls")))
-
-;; (require 'dired-x)
-
-;; ;; Narrow dired to match a filter.
-;; ;; Restore the original buffer with `g'
-;; (use-package dired-narrow
-;;   :ensure t
-;;   :bind (:map dired-mode-map
-;;               ("/" . dired-narrow)))
-
-;; (require 'dired+)
-
-
-
-;(use-package all-the-icons-dired
-;  :hook dired-mode)
 
 ;;; Pretty Control-L
 ;;; Replace ^L with a pretty, and obvious, section
@@ -218,6 +198,13 @@ It sets the transient map to all functions of ALIST."
   :diminish crux-mode
   :bind (("C-a" . crux-move-beginning-of-line)
          ("C-^" . crux-top-join-lines)))
+
+
+(use-package avy
+  :bind (("M-g w" . avy-goto-word-1)))
+
+(use-package literate-calc-mode
+  :ensure t)
 
 ;;; Spelling
 (require 'flyspell)
@@ -338,13 +325,15 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
-;; readonly file issue on OSX
+;; Trying to diagnose a readonly file issue on OSX.
+;; Set the F10 key to dump out the last few commands
 (require 'time-stamp)
 
 (global-set-key (kbd "<f10>") 'dump-buffer-file-info)
 
 (defun dump-buffer-file-info ()
   (interactive)
+  (require 'magit)                      ; Needed for magit-file-tracked-p
   (let* ((file (buffer-file-name))
          (attrs (file-attributes file)))
     (if file
@@ -484,59 +473,37 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "C-c d") 'sdcv-search)
 
 ;; Sunrise/Sunset stuff
-(require 'solar)
-(setq calendar-location-name "Warborough, Oxfordshire")
-(setq calendar-latitude 51.6 calendar-longitude 1.1) 
+(use-package solar
+  :config 
+  (setq calendar-location-name "Warborough, Oxfordshire")
+  (setq calendar-latitude 51.6 calendar-longitude 1.1)) 
 
 
-(require 'browse-kill-ring)
-(browse-kill-ring-default-keybindings)
+(use-package browse-kill-ring
+  :config
+  (browse-kill-ring-default-keybindings))
 
 
 ;;; TRAMP Mode
-(require 'tramp)
+(use-package tramp
 
-;; multi hop configuration
-(add-to-list 'tramp-default-proxies-alist
-	     '(nil "\\`root\\'" "/ssh:%h:"))
-(add-to-list 'tramp-default-proxies-alist
-	     '((regexp-quote (system-name)) nil nil))
-(add-to-list 'tramp-default-proxies-alist
-             '("nagios-uk" "root" "/ssh:%h:"))
+  :config 
+  ;; multi hop configuration
+  (add-to-list 'tramp-default-proxies-alist
+	       '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist
+	       '((regexp-quote (system-name)) nil nil))
+  (add-to-list 'tramp-default-proxies-alist
+               '("nagios-uk" "root" "/ssh:%h:")))
 
 
 
 ;; Message mode
-(require 'footnote)
-(add-hook 'message-mode-hook 'footnote-mode)
+(use-package footnote
+  :hook message-mode)
 
 
-;;; shell related stuff
 
-(use-package shell-pop
-  :ensure t
-  :bind ("<f9>" . shell-pop))
-;;; eshell
-
-(autoload 'eshell "eshell")
-(eval-after-load 'eshell
-  '(progn 
-     
-     (setq eshell-history-size 1024)
-     (require 'em-smart)
-     (eshell-smart-initialize)
-
-     (defun grc-eshell-last-arg ()
-       (last eshell-last-arguments))
-
-     (defun grc-eshell-keys ()
-       (local-set-key (kbd "M-.") 'grc-eshell-last-arg))
-
-     (add-hook 'eshell-mode-hook 'grc-eshell-keys )))
-
-;; eshell completion:
-(require 'pcmpl-git)
-(require 'pcmpl-lein)
 
 
 
@@ -604,14 +571,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (require 'misc)
 (define-key global-map [(meta ?z)] 'zap-up-to-char) ; Rebind M-z 
 
-
-
-;; multiple cursors
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 
 ;;; popwin.el from git@github.com:m2ym/popwin-el.git
@@ -704,6 +663,12 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
+;;narrow dired to match filter
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+
 ;;; Make it easier to access email
 (defun grc-mail ()
   "If gnus already has a group buffer open, switch to it,
@@ -789,6 +754,82 @@ otherwise run gnus to create such a buffer."
                (let ((save-silently t))
                  (recentf-save-list))))
 
+
+
+
+;;; shell related stuff
+
+(use-package shell-pop
+  :ensure t
+  :bind ("<f9>" . shell-pop))
+
+
+;;; eshell
+
+(autoload 'eshell "eshell" nil t)
+(eval-after-load 'eshell
+  '(progn 
+     
+     (setq eshell-history-size 1024)
+     (require 'em-smart)
+     (eshell-smart-initialize)
+
+     (defun grc-eshell-last-arg ()
+       (last eshell-last-arguments))
+
+     (defun grc-eshell-keys ()
+       (local-set-key (kbd "M-.") 'grc-eshell-last-arg))
+
+
+
+     (add-hook 'eshell-mode-hook 'grc-eshell-keys )))
+
+
+
+
+;; eshell completion:
+(require 'pcmpl-git)
+(require 'pcmpl-lein)
+(require 'pcmpl-unix)
+(require 'pcmpl-gnu)
+
+;; Add bookmark support to eshell
+(defun pcomplete/eshell-mode/bmk ()
+  "Completion for `bmk'."
+  (pcomplete-here (bookmark-all-names)))
+
+(defun eshell/bmk (&rest args)
+  "Integration between EShell and bookmarks.
+For usage, execute without arguments.
+Optional argument ARGS foo."
+  (setq args (eshell-flatten-list args))
+  (let ((bookmark (car args))
+        filename name)
+    (cond
+     ((eq nil args)
+      (format "Usage:
+* bmk BOOKMARK to
+** either change directory pointed to by BOOKMARK
+** or bookmark-jump to the BOOKMARK if it is not a directory.
+* bmk . BOOKMARK to bookmark current directory in BOOKMARK.
+Completion is available."))
+     ((string= "." bookmark)
+      ;; Store current path in EShell as a bookmark
+      (if (setq name (car (cdr args)))
+          (progn
+            (bookmark-set name)
+            (bookmark-set-filename name (eshell/pwd))
+            (format "Saved current directory in bookmark %s" name))
+        (error "You must enter a bookmark name")))
+     (t
+       ;; Check whether an existing bookmark has been specified
+       (if (setq filename (bookmark-get-filename bookmark))
+           ;; If it points to a directory, change to it.
+           (if (file-directory-p filename)
+               (eshell/cd filename)
+             ;; otherwise, just jump to the bookmark
+             (bookmark-jump bookmark))
+         (error "%s is not a bookmark" bookmark))))))
 
 (setq config-dir "~/.emacs.d")
 
@@ -800,7 +841,8 @@ otherwise run gnus to create such a buffer."
                  "org-config"
                 ; "org-blog-config"
                  "prog-config"
-                 "sp-config"))
+                 "sp-config"
+                 ))
 
 
 
