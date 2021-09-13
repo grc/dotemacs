@@ -58,8 +58,9 @@
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; Marmalade is currently unavailable - 13 Sep 2021
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/"))
@@ -132,7 +133,6 @@ It sets the transient map to all functions of ALIST."
 
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(require 'ag)                           ; grep on steroids
 
 
 
@@ -147,16 +147,19 @@ It sets the transient map to all functions of ALIST."
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
 
+
+;; Not available in MELPA
 (require 'dired+)
 
 
-;;; Pretty Control-L
-;;; Replace ^L with a pretty, and obvious, section
-;;; https://www.emacswiki.org/emacs/PrettyControlL
-(use-package pp-c-l
-  :ensure t
-  :config
-  (pretty-control-l-mode 1))
+
+;; ;;; Pretty Control-L
+;; ;;; Replace ^L with a pretty, and obvious, section
+;; ;;; https://www.emacswiki.org/emacs/PrettyControlL
+;; (use-package pp-c-l
+;;   :ensure t
+;;   :config
+;;   (setq pretty-control-l-mode 1))
 
 
 ;;; which-key
@@ -692,7 +695,7 @@ otherwise run gnus to create such a buffer."
 
 (setq configs '( "auctex-config"
                  "bbdb-config"
-                 "erc-config"
+                 ; "erc-config"           
                  "helm-config"
                  "mail-config"
                  "org-config"

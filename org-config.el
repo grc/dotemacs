@@ -126,14 +126,6 @@
 
 
 
-;; org-reveal presentations
-
-;;; Commentary:
-;; 
-
-(require 'ox-reveal)
-(setq org-reveal-root "file://../reveal.js-3.4.1")
-
 ;; Org Publishing
 
 (setq jujutsu-base-dir "~/homers/jujutsu/org-site/src")

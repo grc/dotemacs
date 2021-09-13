@@ -63,23 +63,6 @@
 ;; 			    (local-set-key "\C-cl" 'js-load-file-and-go)
 ;; 			    ))
 
-(use-package skewer
-  :disabled
-  :init
-  (add-hook 'js2-mode-hook 'skewer-mode))
-  
-
-
-(require 'simple-httpd)
-
-;;; httpd-start to run server
-;;; (setq httpd-root to set doc root)
-
-
-
-(require 'flymake-jslint)
-(add-hook 'js2-mode-hook 'flymake-jslint-load)
-
 
 ;;; Emacs Lisp
 (require 'eldoc)
