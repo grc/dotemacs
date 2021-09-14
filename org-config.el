@@ -220,21 +220,32 @@
 
 
 
-(use-package org-ref
+;; (use-package org-ref
+;;   :config
+;;   (setq reftex-default-bibliography '("~/bibliography/references.bib"))
+
+;;         ;; see org-ref for use of these variables
+;;         (setq org-ref-bibliography-notes "~/bibliography/notes.org"
+;;               org-ref-default-bibliography '("~/bibliography/references.bib")
+;;               org-ref-pdf-directory "~/bibliography/bibtex-pdfs/"))
+
+
+
+(setq grc-bib-notes  "~/bibliography/notes")
+(setq grc-bibliography  "~/bibliography/references.bib")
+
+(use-package ebib
   :config
-  (setq reftex-default-bibliography '("~/bibliography/references.bib"))
-
-        ;; see org-ref for use of these variables
-        (setq org-ref-bibliography-notes "~/bibliography/notes.org"
-              org-ref-default-bibliography '("~/bibliography/references.bib")
-              org-ref-pdf-directory "~/bibliography/bibtex-pdfs/"))
-
+  (setq ebib-bibtex-dialect 'biblatex)
+  (setq ebib-notes-directory grc-bib-notes)
+  (setq ebib-bib-search-dirs '("~/bibliography"))
+  (setq ebib-preload-bib-files '("references.bib")))
 
 
 (use-package helm-bibtex
   :config
-  (setq bibtex-completion-bibliography "~/bibliography/references.bib")
-  (setq bibtex-completion-notes-path "~/bibliography/notes"))
+  (setq bibtex-completion-bibliography grc-bibliography)
+  (setq bibtex-completion-notes-path  grc-bib-notes))
 
 (provide 'org-config)
 
