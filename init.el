@@ -1,7 +1,45 @@
 ;; init.el --- Emacs init file
+
+
+
 ;;; Code:
+
+(require 'general)   
+
+(eval-when-compile (require 'use-package))
+(setq use-package-compute-statistics t)
+(require 'bind-key)
+
+;;; Move to the 21st Century and adopt package management
+(require 'package)
+;; (add-to-list 'package-archives
+;;              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+
+
+
+;; ;; (add-to-list 'package-archives
+;; ;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
+
+;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
+;; having trouble installing the basic gnu package so let's disable
+;; the checks
+(setq package-check-signature nil)
+(when (version< emacs-version "27.0") (package-initialize))
+
+
+
+
+
 (customize-set-variable 'inhibit-splash-screen t)
-;(setq confirm-kill-emacs t)
+(setq confirm-kill-emacs 'y-or-n-p)
 (set-face-attribute 'default nil :family "Inconsolata" :height 110)
 
 (require 'server)
@@ -11,7 +49,7 @@
 
 
 ;;; Impromptu backup of all files edited by emacs
-(setq version-control t
+(setq version-control 'never
       kept-old-versions 0
       kept-new-versions 10
       backup-directory-alist '(("." . ".bak"))) 
@@ -22,12 +60,26 @@
 
 ;;; Set up my load path
 (add-to-list 'load-path "~/elisp")
+(add-to-list 'load-path "/Users/grc/personal/jujutsu/org-site/elisp")
 
 (let ((default-directory "~/elisp"))
   (normal-top-level-add-subdirs-to-load-path))
 
 
 
+;; If you have the luxury of both DEL and BACKSPACE keys, take
+;; advantage of them: DEL deletes forwards.
+(global-set-key [delete] 'delete-char)
+(global-set-key [M-delete] 'kill-word)
+
+;; Use the INSERT key for something useful: it's mapped to [help].
+(when (eq system-type 'darwin)
+  ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
+  ;; copy ctrl-insert, paste shift-insert on windows keyboard
+  (global-set-key [C-help] #'clipboard-kill-ring-save)
+  (global-set-key [S-help] #'clipboard-yank)
+  ;; insert to toggle `overwrite-mode'
+  (global-set-key [help] #'overwrite-mode))
 
 ;;; If using the nextstep build, set modifiers to match what I'm used
 ;;; to under X11.
@@ -46,7 +98,11 @@
 (put 'narrow-to-region 'disabled nil)
 (set-mouse-color "white")
 
+;; (use-package unpackaged
+;;   :after (general))
 
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 
 
@@ -95,6 +151,14 @@
 (global-set-key "\M-/" 'hippie-expand)
 
 
+
+(defun date (arg)
+  (interactive "P")
+  (insert (if arg
+              (format-time-string "%Y-%m-%d")
+            (format-time-string "%e %B %Y"))))
+
+
 ;; yasnippet
 (require 'yasnippet)
 (yas-global-mode)
@@ -126,15 +190,9 @@ It sets the transient map to all functions of ALIST."
                       ("g" . text-scale-increase))))
 
 
-;;; zsh, my normal default, doesn't work at all nicely in emacs'
-;;; shell: the completion menu isn't displayed, the right hand prompt
-;;; fails etc. Use something more conservative if using M-x shell:
-(setq explicit-shell-file-name "/bin/bash")
-
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
+(require 'ag)                           ; grep on steroids
 
 ;;; Dired related functionality
 
@@ -182,6 +240,13 @@ It sets the transient map to all functions of ALIST."
   :diminish crux-mode
   :bind (("C-a" . crux-move-beginning-of-line)
          ("C-^" . crux-top-join-lines)))
+
+
+(use-package avy
+  :bind (("M-g w" . avy-goto-word-1)))
+
+(use-package literate-calc-mode
+  :ensure t)
 
 ;;; Spelling
 (require 'flyspell)
@@ -279,13 +344,38 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 
 
-;; readonly file issue on OSX
+;; Grammar - I'm experimenting with langtool
+
+;; (use-package langtool
+;;   :ensure t
+;;   ;:hook text-mode
+;;   :init  
+;;   (setq langtool-language-tool-jar
+;;         "/Users/grc/LanguageTool/languagetool-commandline.jar")  
+;;   (setq langtool-default-language "en-GB")
+;;   ;; Disable following rules:
+;;   ;; - WHITESPACE - I'm happy with double spaces after a full stop.
+;;   ;; - WORD_CONTAINS_UNDERSCORE - org mode variables
+;;   ;; - MORFOLOGIK - Devolve spelling to flyspell
+;;   ;; - QUOTES - LaTeX
+;;   ;; Note documentation for format of this variable is poor
+;;   ;; see https://github.com/mhayashi1120/Emacs-langtool/issues/34
+;;   (setq langtool-user-arguments
+;;         '("--disable"  "WHITESPACE_RULE,WORD_CONTAINS_UNDERSCORE,MORFOLOGIK_RULE_EN_GB,EN_QUOTES"
+;;           "--languagemodel" "/Users/grc/LanguageTool/ngrams-en-20150817"))
+;; )
+
+
+
+;; Trying to diagnose a readonly file issue on OSX.
+;; Set the F10 key to dump out the last few commands
 (require 'time-stamp)
 
 (global-set-key (kbd "<f10>") 'dump-buffer-file-info)
 
 (defun dump-buffer-file-info ()
   (interactive)
+  (require 'magit)                      ; Needed for magit-file-tracked-p
   (let* ((file (buffer-file-name))
          (attrs (file-attributes file)))
     (if file
@@ -303,6 +393,34 @@ With prefix P, create local abbrev. Otherwise it will be global."
         (append-to-file nil nil "~/read-only-issue")))))
 
 
+
+;; Theme related stuff
+
+
+;; I was experimenting with doom themes, but have currently moved over to modus-vivendi
+;(require 'doom-themes)
+
+;(load-theme 'doom-peacock t)
+;(doom-themes-org-config)
+
+
+;; Modus themes are documented at https://protesilaos.com/modus-themes/
+(use-package modus-themes
+  :ensure
+  
+  :init
+  ; add any customisations before loading the themes
+  (modus-themes-load-themes)
+  
+  :config
+  (modus-themes-load-vivendi))
+
+
+
+(use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode))
+
 
 
 ;; spotlight on OSX
@@ -310,8 +428,8 @@ With prefix P, create local abbrev. Otherwise it will be global."
 ;; search. M-RET after initial search term allows you to narrow to a
 ;; particular set of files.
 
-(use-package spotlight
-  :if (eq system-type 'darwin))
+;(use-package spotlight
+;  :if (eq system-type 'darwin))
 
 
 
@@ -397,59 +515,37 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "C-c d") 'sdcv-search)
 
 ;; Sunrise/Sunset stuff
-(require 'solar)
-(setq calendar-location-name "Warborough, Oxfordshire")
-(setq calendar-latitude 51.6 calendar-longitude 1.1) 
+(use-package solar
+  :config 
+  (setq calendar-location-name "Warborough, Oxfordshire")
+  (setq calendar-latitude 51.6 calendar-longitude 1.1)) 
 
 
-(require 'browse-kill-ring)
-(browse-kill-ring-default-keybindings)
+(use-package browse-kill-ring
+  :config
+  (browse-kill-ring-default-keybindings))
 
 
 ;;; TRAMP Mode
-(require 'tramp)
+(use-package tramp
 
-;; multi hop configuration
-(add-to-list 'tramp-default-proxies-alist
-	     '(nil "\\`root\\'" "/ssh:%h:"))
-(add-to-list 'tramp-default-proxies-alist
-	     '((regexp-quote (system-name)) nil nil))
-(add-to-list 'tramp-default-proxies-alist
-             '("nagios-uk" "root" "/ssh:%h:"))
+  :config 
+  ;; multi hop configuration
+  (add-to-list 'tramp-default-proxies-alist
+	       '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist
+	       '((regexp-quote (system-name)) nil nil))
+  (add-to-list 'tramp-default-proxies-alist
+               '("nagios-uk" "root" "/ssh:%h:")))
 
 
 
 ;; Message mode
-(require 'footnote)
-(add-hook 'message-mode-hook 'footnote-mode)
+(use-package footnote
+  :hook message-mode)
 
 
-;;; shell related stuff
 
-(use-package shell-pop
-  :ensure t
-  :bind ("<f9>" . shell-pop))
-;;; eshell
-
-(autoload 'eshell "eshell")
-(eval-after-load 'eshell
-  '(progn 
-     
-     (setq eshell-history-size 1024)
-     (require 'em-smart)
-     (eshell-smart-initialize)
-
-     (defun grc-eshell-last-arg ()
-       (last eshell-last-arguments))
-
-     (defun grc-eshell-keys ()
-       (local-set-key (kbd "M-.") 'grc-eshell-last-arg))
-
-     (add-hook 'eshell-mode-hook 'grc-eshell-keys )))
-
-;; eshell completion:
-(require 'pcmpl-git)
-(require 'pcmpl-lein)
 
 
 
@@ -517,14 +613,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (require 'misc)
 (define-key global-map [(meta ?z)] 'zap-up-to-char) ; Rebind M-z 
 
-
-
-;; multiple cursors
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 
 ;;; popwin.el from git@github.com:m2ym/popwin-el.git
@@ -599,7 +687,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (require 'pexip)
 (defconst pexip-production "10.47.2.49"
   "Address of management node of production MCU")
-(global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
+; (global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
 
 
 
@@ -616,6 +704,12 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (define-key grc/toggle-map "w" #'whitespace-mode)
 
 
+
+;;narrow dired to match filter
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
 
 ;;; Make it easier to access email
 (defun grc-mail ()
@@ -691,6 +785,94 @@ otherwise run gnus to create such a buffer."
 
 
 
+;; recent files
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
+
+;; Save file list every 5 minutes, without echoing save message
+(run-at-time nil (* 5 60)
+             (lambda ()
+               (let ((save-silently t))
+                 (recentf-save-list))))
+
+
+
+
+;;; shell related stuff
+
+(use-package shell-pop
+  :ensure t
+  :bind ("<f9>" . shell-pop))
+
+
+;;; eshell
+
+(autoload 'eshell "eshell" nil t)
+(eval-after-load 'eshell
+  '(progn 
+     
+     (setq eshell-history-size 1024)
+     (require 'em-smart)
+     (eshell-smart-initialize)
+
+     (defun grc-eshell-last-arg ()
+       (last eshell-last-arguments))
+
+     (defun grc-eshell-keys ()
+       (local-set-key (kbd "M-.") 'grc-eshell-last-arg))
+
+
+
+     (add-hook 'eshell-mode-hook 'grc-eshell-keys )))
+
+
+
+
+;; eshell completion:
+(require 'pcmpl-git)
+(require 'pcmpl-lein)
+(require 'pcmpl-unix)
+(require 'pcmpl-gnu)
+
+;; Add bookmark support to eshell
+(defun pcomplete/eshell-mode/bmk ()
+  "Completion for `bmk'."
+  (pcomplete-here (bookmark-all-names)))
+
+(defun eshell/bmk (&rest args)
+  "Integration between EShell and bookmarks.
+For usage, execute without arguments.
+Optional argument ARGS foo."
+  (setq args (eshell-flatten-list args))
+  (let ((bookmark (car args))
+        filename name)
+    (cond
+     ((eq nil args)
+      (format "Usage:
+* bmk BOOKMARK to
+** either change directory pointed to by BOOKMARK
+** or bookmark-jump to the BOOKMARK if it is not a directory.
+* bmk . BOOKMARK to bookmark current directory in BOOKMARK.
+Completion is available."))
+     ((string= "." bookmark)
+      ;; Store current path in EShell as a bookmark
+      (if (setq name (car (cdr args)))
+          (progn
+            (bookmark-set name)
+            (bookmark-set-filename name (eshell/pwd))
+            (format "Saved current directory in bookmark %s" name))
+        (error "You must enter a bookmark name")))
+     (t
+       ;; Check whether an existing bookmark has been specified
+       (if (setq filename (bookmark-get-filename bookmark))
+           ;; If it points to a directory, change to it.
+           (if (file-directory-p filename)
+               (eshell/cd filename)
+             ;; otherwise, just jump to the bookmark
+             (bookmark-jump bookmark))
+         (error "%s is not a bookmark" bookmark))))))
+
 (setq config-dir "~/.emacs.d")
 
 (setq configs '( "auctex-config"
@@ -701,7 +883,8 @@ otherwise run gnus to create such a buffer."
                  "org-config"
                 ; "org-blog-config"
                  "prog-config"
-                 "sp-config"))
+                 "sp-config"
+                 ))
 
 
 
@@ -730,3 +913,4 @@ otherwise run gnus to create such a buffer."
 
 ;;; init.el ends here
 (put 'timer-list 'disabled nil)
+(put 'downcase-region 'disabled nil)

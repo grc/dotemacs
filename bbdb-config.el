@@ -2,6 +2,12 @@
 ;;;; Configure for BBDB v3
 ;;;  git://git.savannah.nongnu.org/bbdb.git
 
+
+
+;; You have to run `make install' to generate bbdb-loadefs.  By default that
+;; install to /usr/local/share/emacs/site-lisp
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
 (require 'bbdb-loaddefs)
 (require 'subr-x)
 
@@ -22,7 +28,7 @@
 ;; form letter
 ;; }
 ;;
-;; The '-' after \surname meanns that address may or may not be present
+;; The '-' after \surname means that address may or may not be present
 
 (defun grc-pexip-employees ()
   (interactive)

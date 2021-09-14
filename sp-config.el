@@ -43,3 +43,8 @@
 (define-key smartparens-mode-map (kbd "M-F") 'sp-forward-symbol)
 (define-key smartparens-mode-map (kbd "M-B") 'sp-backward-symbol)                            
 
+
+;; Wrapping sexps
+(define-key smartparens-mode-map (kbd "M-(") 'sp-wrap-round)                            
+(define-key smartparens-mode-map (kbd "M-[") 'sp-wrap-square)
+(define-key smartparens-mode-map (kbd "M-{") 'sp-wrap-curly)
