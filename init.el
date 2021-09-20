@@ -4,7 +4,10 @@
 
 ;;; Code:
 
-(require 'general)   
+(setq native-comp-async-report-warnings-errors nil)
+
+
+;(require 'general)   
 
 (eval-when-compile (require 'use-package))
 (setq use-package-compute-statistics t)
@@ -60,7 +63,7 @@
 
 ;;; Set up my load path
 (add-to-list 'load-path "~/elisp")
-(add-to-list 'load-path "/Users/grc/personal/jujutsu/org-site/elisp")
+(add-to-list 'load-path "~/personal/jujutsu/org-site/elisp")
 
 (let ((default-directory "~/elisp"))
   (normal-top-level-add-subdirs-to-load-path))
@@ -100,6 +103,8 @@
 
 ;; (use-package unpackaged
 ;;   :after (general))
+
+
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -245,8 +250,7 @@ It sets the transient map to all functions of ALIST."
 (use-package avy
   :bind (("M-g w" . avy-goto-word-1)))
 
-(use-package literate-calc-mode
-  :ensure t)
+
 
 ;;; Spelling
 (require 'flyspell)

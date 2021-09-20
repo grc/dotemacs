@@ -137,7 +137,8 @@
   :after org-mode)
 
 (use-package org-protocol)
-(use-package helm-org-rifle)
+(use-package helm-org-rifle
+  :ensure t)
 
 
 (use-package org-gcal
@@ -169,6 +170,10 @@
 
 
 ;; Org Publishing
+
+;; The jujutsu org exporter is kept out of the normal elisp tree and
+;; can be found iin the jujutsu web site directory structure.
+                                        ; 
 (require 'ox-jujutsu-site)
 
 (setq org-publish-project-alist
@@ -219,43 +224,47 @@
 
 
 
+;; Keep bibliography and zettelkasten on one computer
+(if (string= system-name "kakapo")
+    (setq grc-brain-dir "~/study/brain"
+          grc-bibliography "~/study/bibliography/references.bib"
+          grc-bib-notes "~/study/bibliography/notes"
+          grc-bib-search-dirs "~/study/bibliography"))
 
-;; org-roan
+;; org-roam
 (use-package org-roam
+  :ensure t
+
   :after org
   
+  :preface
+  (setq org-roam-v2-ack t)
+
   :custom
-  (org-roam-directory "~/brain")
+  (org-roam-directory grc-brain-dir)
+
   :bind
   ("C-c n l" . org-roam-buffer-toggle)
   ("C-c n f" . org-roam-node-find)
+
   (:map org-mode-map
         (("C-c n i" . org-roam-node-insert)))
+
   :config
   (setq org-roam-capture-templates '(("d" "default" plain "%?"
                                       :if-new (file+head "${slug}.org"
                                                          "#+TITLE: ${title}\n#+DATE: %T\n")
                                       :unnarrowed t)))
+  
   ;; this sets up various file handling hooks so your DB remains up to date
   (org-roam-setup))
 
 
 
-;; (use-package org-ref
-;;   :config
-;;   (setq reftex-default-bibliography '("~/bibliography/references.bib"))
-
-;;         ;; see org-ref for use of these variables
-;;         (setq org-ref-bibliography-notes "~/bibliography/notes.org"
-;;               org-ref-default-bibliography '("~/bibliography/references.bib")
-;;               org-ref-pdf-directory "~/bibliography/bibtex-pdfs/"))
-
-
-
-(setq grc-bib-notes  "~/bibliography/notes")
-(setq grc-bibliography  "~/bibliography/references.bib")
 
 (use-package ebib
+  :ensure t
+  
   :config
   (setq ebib-bibtex-dialect 'biblatex)
   (setq ebib-notes-directory grc-bib-notes)
@@ -264,6 +273,7 @@
 
 
 (use-package helm-bibtex
+  :ensure t
   :config
   (setq bibtex-completion-bibliography grc-bibliography)
   (setq bibtex-completion-notes-path  grc-bib-notes))
