@@ -27,7 +27,11 @@
                  (nnimap-port 143)
                  (nnimap-address "127.0.0.1")))
 
-
+(setq gnus-secondary-select-methods
+      '((nnimap "workacct"
+                (nnimap-stream network)
+                (nnimap-port 143)
+                (nnimap-address "127.0.0.1"))))
 
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
@@ -175,8 +179,8 @@
 
 
 ;; Pretty icons for gnus
-(require 'all-the-icons-gnus)
-(all-the-icons-gnus-setup)
+;(require 'all-the-icons-gnus)
+;(all-the-icons-gnus-setup)
 
 
 

@@ -36,6 +36,15 @@
 
   (setq org-babel-python-command "python3")
 
+
+;; New LaTeX backend that parses LATEX_HEADER lines, allowing macro replacement in them.
+  (org-export-define-derived-backend 'grc-latex 'latex
+    :options-alist '(( :latex-header-extra "LATEX_HEADER" nil nil parse)
+                     (:latex-header-extra "LATEX_HEADER_EXTRA" nil nil parse))
+    :menu-entry ''(?j "Giles' latex" org-latex-export-to-pdf))
+
+  
+
   ;; See  https://zge.us.to/emacs-style.html#fn10 for advice on not using setq in :config
   :custom
   (org-babel-tangle-lang-exts '(("clojure" . "clj")
@@ -137,7 +146,8 @@
   :after org-mode)
 
 (use-package org-protocol)
-(use-package helm-org-rifle)
+(use-package helm-org-rifle
+  :ensure t)
 
 
 (use-package org-gcal
@@ -166,9 +176,13 @@
 ;;        "Timer used to refresh org calendar from google calendar.")
 
 
-
+  
 
 ;; Org Publishing
+
+;; The jujutsu org exporter is kept out of the normal elisp tree and
+;; can be found iin the jujutsu web site directory structure.
+                                        
 (require 'ox-jujutsu-site)
 
 (setq org-publish-project-alist
@@ -180,7 +194,7 @@
          :html-head-include-default-style nil
          :html-head-include-scripts nil
          :html-postamble nil
-         :publishing-directory "~/Sites/jujutsu"
+         :publishing-directory "/var/www/jujutsu"
          :publishing-function org-jujutsu-site-publish-to-html
          :recursive t
          :with-toc nil
@@ -189,21 +203,27 @@
          :base-directory "~/personal/jujutsu/org-site/src/css"
          :base-extension "css"
          :html-style nil
-         :publishing-directory  "~/Sites/jujutsu/css"
+         :publishing-directory  "/var/www/jujutsu/css"
+         :publishing-function org-publish-attachment)
+        ("jj-js"
+         :base-directory "~/personal/jujutsu/org-site/src/js"
+         :base-extension "js"
+         :html-style nil
+         :publishing-directory  "/var/www/jujutsu/js"
          :publishing-function org-publish-attachment)
         ("jj-images"
          :base-directory "~/personal/jujutsu/org-site/src/images"
          :base-extension any
-         :publishing-directory  "~/Sites/jujutsu/images"
+         :publishing-directory  "/var/www/jujutsu/images"
          :publishing-function org-publish-attachment)
         ("jj-htaccess"
          :base-directory "~/personal/jujutsu/org-site/src"
          :base-extension "htaccess"
-         :publishing-directory  "~/Sites/jujutsu"
+         :publishing-directory  "/var/www/jujutsu"
          :publishing-function org-publish-attachment)
 
         ("jujutsu"
-         :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
+         :components ("jj-org-files" "jj-css" "jj-js" "jj-images" "jj-htaccess"))))
                                         
                                         
 
@@ -219,51 +239,58 @@
 
 
 
+;; Keep bibliography and zettelkasten on one computer
+(if (string= system-name "kakapo")
+    (setq grc-brain-dir "~/study/brain"
+          grc-bibliography "~/study/bibliography/references.bib"
+          grc-bib-notes "~/study/bibliography/notes"
+          grc-bib-search-dirs "~/study/bibliography"))
 
-;; org-roan
+;; org-roam
 (use-package org-roam
+  :ensure t
+
   :after org
   
+  :preface
+  (setq org-roam-v2-ack t)
+
   :custom
-  (org-roam-directory "~/brain")
+  (org-roam-directory grc-brain-dir)
+
   :bind
   ("C-c n l" . org-roam-buffer-toggle)
   ("C-c n f" . org-roam-node-find)
+
   (:map org-mode-map
         (("C-c n i" . org-roam-node-insert)))
+
   :config
   (setq org-roam-capture-templates '(("d" "default" plain "%?"
                                       :if-new (file+head "${slug}.org"
                                                          "#+TITLE: ${title}\n#+DATE: %T\n")
                                       :unnarrowed t)))
+  
   ;; this sets up various file handling hooks so your DB remains up to date
   (org-roam-setup))
 
 
-
-;; (use-package org-ref
-;;   :config
-;;   (setq reftex-default-bibliography '("~/bibliography/references.bib"))
-
-;;         ;; see org-ref for use of these variables
-;;         (setq org-ref-bibliography-notes "~/bibliography/notes.org"
-;;               org-ref-default-bibliography '("~/bibliography/references.bib")
-;;               org-ref-pdf-directory "~/bibliography/bibtex-pdfs/"))
-
-
-
-(setq grc-bib-notes  "~/bibliography/notes")
-(setq grc-bibliography  "~/bibliography/references.bib")
+(setq bibtex-dialect 'biblatex)
 
 (use-package ebib
+  :ensure t
+  
   :config
   (setq ebib-bibtex-dialect 'biblatex)
   (setq ebib-notes-directory grc-bib-notes)
-  (setq ebib-bib-search-dirs '("~/bibliography"))
-  (setq ebib-preload-bib-files '("references.bib")))
+  (setq ebib-bib-search-dirs '("~/study/bibliography"))
+  (setq ebib-preload-bib-files '("~/study/bibliography/references.bib")))
+
+(use-package org-ebib)
 
 
 (use-package helm-bibtex
+  :ensure t
   :config
   (setq bibtex-completion-bibliography grc-bibliography)
   (setq bibtex-completion-notes-path  grc-bib-notes))

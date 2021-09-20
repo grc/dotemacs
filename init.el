@@ -4,7 +4,10 @@
 
 ;;; Code:
 
-(require 'general)   
+(setq native-comp-async-report-warnings-errors nil)
+
+
+;(require 'general)   
 
 (eval-when-compile (require 'use-package))
 (setq use-package-compute-statistics t)
@@ -36,8 +39,6 @@
 
 
 
-
-
 (customize-set-variable 'inhibit-splash-screen t)
 (setq confirm-kill-emacs 'y-or-n-p)
 (set-face-attribute 'default nil :family "Inconsolata" :height 110)
@@ -60,7 +61,7 @@
 
 ;;; Set up my load path
 (add-to-list 'load-path "~/elisp")
-(add-to-list 'load-path "/Users/grc/personal/jujutsu/org-site/elisp")
+(add-to-list 'load-path "~/personal/jujutsu/org-site/elisp")
 
 (let ((default-directory "~/elisp"))
   (normal-top-level-add-subdirs-to-load-path))
@@ -101,34 +102,13 @@
 ;; (use-package unpackaged
 ;;   :after (general))
 
+
+
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
 
 
-;;; Move to the 21st Century and adopt package management
-(require 'package)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-
-;; Marmalade is currently unavailable - 13 Sep 2021
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
-
-(add-to-list 'package-archives
-             '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-
-;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
-;; having trouble installing the basic gnu package so let's disable
-;; the checks
-(setq package-check-signature nil)
-(when (version< emacs-version "27.0") (package-initialize))
 
 
 
@@ -139,6 +119,14 @@
 ;;; can be found at
 ;;; https://en.wikipedia.org/wiki/Order_of_operations#Exceptions
 (setq calc-multiplication-has-precedence nil)
+
+
+;; Automatically set scripts with a !# shebang line to execute
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+
+
 
 ;; Ability to jump through change locations
 (require 'goto-chg)
@@ -245,8 +233,7 @@ It sets the transient map to all functions of ALIST."
 (use-package avy
   :bind (("M-g w" . avy-goto-word-1)))
 
-(use-package literate-calc-mode
-  :ensure t)
+
 
 ;;; Spelling
 (require 'flyspell)
@@ -396,18 +383,10 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 ;; Theme related stuff
 
-
-;; I was experimenting with doom themes, but have currently moved over to modus-vivendi
-;(require 'doom-themes)
-
-;(load-theme 'doom-peacock t)
-;(doom-themes-org-config)
-
-
+                                        
 ;; Modus themes are documented at https://protesilaos.com/modus-themes/
 (use-package modus-themes
   :ensure
-  
   :init
   ; add any customisations before loading the themes
   (modus-themes-load-themes)
@@ -740,6 +719,24 @@ otherwise run gnus to create such a buffer."
 ;;; Load in other config
 
 
+
+
+(use-package hl-line+
+  :disabled t
+  :hook
+  (window-scroll-functions . hl-line-flash)
+  (focus-in . hl-line-flash)
+  (post-command . hl-line-flash)
+
+  :custom
+  (global-hl-line-mode nil)
+  (hl-line-flash-show-period 0.5)
+  (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+  (hl-line-overlay-priority -100) ;; sadly, seems not observed by diredfl
+ )
+
+
+
 ;; URL of current active tab in Chrome
 ;; OSX only as it uses OSA script
 
@@ -875,15 +872,16 @@ Completion is available."))
 
 (setq config-dir "~/.emacs.d")
 
+
 (setq configs '( "auctex-config"
                  "bbdb-config"
-                 ; "erc-config"           
+                 "erc-config"           
                  "helm-config"
                  "mail-config"
                  "org-config"
-                ; "org-blog-config"
-                 "prog-config"
-                 "sp-config"
+                "org-blog-config"
+                "prog-config"
+                "sp-config"
                  ))
 
 
@@ -891,7 +889,7 @@ Completion is available."))
 
 (dolist (config configs)
   (message (format "loading %s" config))
-  (load (format "%s/%s" config-dir config))
+  (load (format "%s/%s" config-dir config)))
 
 
 
@@ -900,7 +898,7 @@ Completion is available."))
 
   
 ;;; Move customisations to their own file
-  (setq custom-file "~/.emacs.d/custom.el"))
+(setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
 

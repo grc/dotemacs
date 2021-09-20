@@ -52,7 +52,12 @@
 
 ;;; Python
 (setq python-shell-interpreter "python3")
-(add-hook 'python-mode-hook 'blacken-mode)
+
+
+(use-package blacken
+  :ensure t
+  :hook (python-mode . blacken-mode))
+
 
 
 ;; taken from https://stackoverflow.com/questions/2658475/python-mode-import-problem
