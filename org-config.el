@@ -224,12 +224,18 @@
 
 
 
-;; Keep bibliography and zettelkasten on one computer
+;; Keep bibliography, zettelkasten and basic org directory on Kakapo
 (if (string= system-name "kakapo")
-    (setq grc-brain-dir "~/study/brain"
-          grc-bibliography "~/study/bibliography/references.bib"
-          grc-bib-notes "~/study/bibliography/notes"
-          grc-bib-search-dirs "~/study/bibliography"))
+    (setq grc-kakapo-home "~/")
+  (setq grc-kakapo-home    "/System/Volumes/Data/mnt/Resources/grc-kakapo/"))
+
+
+;; These are all relative to grc-kakapo-home
+(setq grc-brain-dir "study/brain"
+      grc-bibliography-dir "study/bibliography/"
+      grc-bibliography-file "references.bib"
+      grc-bib-notes "study/bibliography/notes"
+      grc-bib-search-dirs '((concat grc-kakapo-home grc-bibliography-dir)))
 
 ;; org-roam
 (use-package org-roam
@@ -241,7 +247,7 @@
   (setq org-roam-v2-ack t)
 
   :custom
-  (org-roam-directory grc-brain-dir)
+  (org-roam-directory (concat grc-kakapo-home grc-brain-dir))
 
   :bind
   ("C-c n l" . org-roam-buffer-toggle)
@@ -267,16 +273,16 @@
   
   :config
   (setq ebib-bibtex-dialect 'biblatex)
-  (setq ebib-notes-directory grc-bib-notes)
-  (setq ebib-bib-search-dirs '("~/bibliography"))
-  (setq ebib-preload-bib-files '("references.bib")))
+  (setq ebib-notes-directory (concat grc-kakapo-home grc-bib-notes))
+  (setq ebib-bib-search-dirs '((concat grc-kakapo-home grc-bib-search-dirs)))
+  (setq ebib-preload-bib-files '(grc-bibliography-file)))
 
 
 (use-package helm-bibtex
   :ensure t
   :config
-  (setq bibtex-completion-bibliography grc-bibliography)
-  (setq bibtex-completion-notes-path  grc-bib-notes))
+  (setq bibtex-completion-bibliography (concat grc-kakapo-home grc-bibliography-dir grc-bibliography-file))
+  (setq bibtex-completion-notes-path  (concat grc-kakapo-home grc-bib-notes)))
 
 (provide 'org-config)
 
