@@ -13,9 +13,9 @@
 
 (setq use-package-verbose t)
 
-(use-package org-mode
-  :init
-  (add-hook 'message-mode-hook 'turn-on-orgtbl)
+(use-package org
+ 
+ 
   
   :bind
   (("\C-ca" . org-agenda)
@@ -24,9 +24,7 @@
    ("\C-cc" . org-capture))
   
   :config
-  (setq 
-        org-src-window-setup ‘current-window)
-  
+    
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -131,25 +129,23 @@
       :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
   (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))))
 
-:mode "\\.org\\'"
+;; (use-package ox-beamer
+;;   :after org-mode)
 
-(use-package ox-beamer
-  :after org-mode)
-
-(use-package org-protocol)
-(use-package helm-org-rifle
-  :ensure t)
+;; (use-package org-protocol)
+;; (use-package helm-org-rifle
+;;   :ensure t)
 
 
-(use-package org-gcal
-  :after org-mode
-  :config
-  (setq org-gcal-client-id (first (netrc-credentials "gcal"))
-        org-gcal-client-secret (second (netrc-credentials "gcal"))
-        org-gcal-file-alist '(("giles@pexip.com" .  "~/org/schedule.org")))
-  ;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
-  ;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
-  )
+;; (use-package org-gcal
+;;   :after org-mode
+;;   :config
+;;   (setq org-gcal-client-id (first (netrc-credentials "gcal"))
+;;         org-gcal-client-secret (second (netrc-credentials "gcal"))
+;;         org-gcal-file-alist '(("giles@pexip.com" .  "~/org/schedule.org")))
+;;   ;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+;;   ;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+;;   )
 
 ;; (defun grc-org-update-calendar ()
 ;;        (interactive)
@@ -174,7 +170,7 @@
 ;; The jujutsu org exporter is kept out of the normal elisp tree and
 ;; can be found iin the jujutsu web site directory structure.
                                         ; 
-(require 'ox-jujutsu-site)
+(require 'ox-jujutsu-site nil t)
 
 (setq org-publish-project-alist
       '(("jj-org-files"
@@ -217,7 +213,7 @@
 ;;; Org Latex Export
 
 ;; Allow line breaks in URLs
-(add-to-list 'org-latex-default-packages-alist "\\PassOptionsToPackage{hyphens}{url}")
+;(add-to-list 'org-latex-default-packages-alist "\\PassOptionsToPackage{hyphens}{url}")
 
 
 (setq org-latex-hyperref-template nil)

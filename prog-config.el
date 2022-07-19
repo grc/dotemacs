@@ -1,10 +1,6 @@
 ;;; prog-config.el --- Personal configuration for programming modes
 
 
-;;; Rainbow delimiters:
-;; colour pmatching pairs of parentheses etc Makes sense to turn this
-;; on wherever we have paredit mode enabled
-
 ;;; Code:
 
 (global-prettify-symbols-mode 1)
@@ -15,15 +11,16 @@
 ;;; Commentary:
 ;; 
 
-(require 'rainbow-delimiters)
+(use-package rainbow-delimiters)
+
 ;;; Colours are a bit too subtle by default so saturate them
-(require 'cl-lib)
-(require 'color)
-(cl-loop
- for index from 1 to rainbow-delimiters-max-face-count
- do
- (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-   (cl-callf color-saturate-name (face-foreground face) 30)))
+;; (require 'cl-lib)
+;; (require 'color)
+;; (cl-loop
+;;  for index from 1 to rainbow-delimiters-max-face-count
+;;  do
+;;  (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+;;    (cl-callf color-saturate-name (face-foreground face) 30)))
 
 
 
@@ -70,34 +67,18 @@ the current directory in Python's search path."
 
 (add-hook 'inferior-python-mode-hook 'python-reinstate-current-directory)
 
-;;; Javascript
 
-
-(require 'js2-mode)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-
-(use-package js2-refactor
-  :disabled)
-
-
-
-(use-package flymake-jslint
-  :disabled
-  :hook js2-mode)
-
-
-
 ;;; Emacs Lisp
-(use-package eldoc
-  :hook emacs-lisp-mode)
+;; (use-package eldoc
+;;   :hook emacs-lisp-mode)
 
 
-(require 'checkdoc)
-(add-hook 'emacs-lisp-mode-hook 'checkdoc-minor-mode)
+;; (require 'checkdoc)
+;; (add-hook 'emacs-lisp-mode-hook 'checkdoc-minor-mode)
 
-(require 'elisp-slime-nav)
-(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-  (add-hook hook 'elisp-slime-nav-mode))
+;; (require 'elisp-slime-nav)
+;; (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+;;   (add-hook hook 'elisp-slime-nav-mode))
 
 
 ;;; Lisp

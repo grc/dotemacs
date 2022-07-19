@@ -19,8 +19,10 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+
+(require 'use-package-ensure)
 (eval-and-compile
-  (setq use-package-always-ensure t
+  (setq use-package-always-ensure t     ; Install missing packages
         use-package-expand-minimally t))
 
 
@@ -872,19 +874,10 @@ Completion is available."))
                  "sp-config"
                  ))
 
-
-
-
 (dolist (config configs)
   (message (format "loading %s" config))
-  ;(load (format "%s/%s" config-dir config)) 
+  (load (format "%s/%s" config-dir config)) 
 
-
-
-
-
-
-  
 ;;; Move customisations to their own file
   (setq custom-file "~/.emacs.d/custom.el"))
 (load custom-file)
