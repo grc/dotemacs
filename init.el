@@ -6,29 +6,30 @@
 
 (setq native-comp-async-report-warnings-errors nil)
 
+(tool-bar-mode -1)                       ; negative means disabled
+(menu-bar-mode 1)
 
-;(require 'general)   
-
-(eval-when-compile (require 'use-package))
-(setq use-package-compute-statistics t)
-(require 'bind-key)
-
-;;; Move to the 21st Century and adopt package management
 (require 'package)
-;; (add-to-list 'package-archives
-;;              '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-
-
-
-;; ;; (add-to-list 'package-archives
-;; ;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(package-initialize)
 
-;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package-ensure)
+(eval-and-compile
+  (setq use-package-always-ensure t     ; Install missing packages
+        use-package-expand-minimally t))
+
+
+
+
+
+(require 'bind-key)
 
 
 ;; Signature checking is fairly new to elpa (as of Oct 2014) and I was
@@ -60,11 +61,15 @@
 (setq load-prefer-newer t)
 
 ;;; Set up my load path
-(add-to-list 'load-path "~/elisp")
+
 (add-to-list 'load-path "~/personal/jujutsu/org-site/elisp")
 
-(let ((default-directory "~/elisp"))
-  (normal-top-level-add-subdirs-to-load-path))
+;;  If we have an elisp directory, add it and all top level
+;;  sub-directories to the load path.
+(if (file-directory-p "~/elisp")
+    (add-to-list 'load-path "~/elisp")
+  (let ((default-directory "~/elisp"))
+    (normal-top-level-add-subdirs-to-load-path)))
 
 
 
@@ -84,11 +89,10 @@
 
 ;;; If using the nextstep build, set modifiers to match what I'm used
 ;;; to under X11.
-(if (featurep 'ns)
-    (progn
-      (setq mac-option-modifier 'none)
-      (setq mac-command-modifier 'meta)))
-
+;; (if (featurep 'ns)
+;;     (progn
+;;       (setq mac-option-modifier 'none)
+;;       (setq mac-command-modifier 'meta)))
 
 ;;; Buffer naming when visiting several files with the same name
 (require 'uniquify)
@@ -103,9 +107,9 @@
 ;;   :after (general))
 
 
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config (exec-path-from-shell-initialize) )
 
 
 
@@ -126,15 +130,6 @@
           'executable-make-buffer-file-executable-if-script-p)
 
 
-
-
-;; Ability to jump through change locations
-(require 'goto-chg)
-(global-set-key [(control ?.)] 'goto-last-change)
-(global-set-key [(control ?,)] 'goto-last-change-reverse)
-
-
-
 (require 'hippie-exp)
 (global-set-key "\M-/" 'hippie-expand)
 
@@ -147,9 +142,10 @@
             (format-time-string "%e %B %Y"))))
 
 
-;; yasnippet
-(require 'yasnippet)
-(yas-global-mode)
+
+(use-package  yasnippet
+  :config 
+  (yas-global-mode))
 
 
 ;;; Repeatable command idea taken from abo-abo:
@@ -180,7 +176,7 @@ It sets the transient map to all functions of ALIST."
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(require 'ag)                           ; grep on steroids
+;(require 'ag)                           ; grep on steroids
 
 ;;; Dired related functionality
 
@@ -195,17 +191,9 @@ It sets the transient map to all functions of ALIST."
 
 
 ;; Not available in MELPA
-(require 'dired+)
+(require 'dired+ nil t)
 
 
-
-;; ;;; Pretty Control-L
-;; ;;; Replace ^L with a pretty, and obvious, section
-;; ;;; https://www.emacswiki.org/emacs/PrettyControlL
-;; (use-package pp-c-l
-;;   :ensure t
-;;   :config
-;;   (setq pretty-control-l-mode 1))
 
 
 ;;; which-key
@@ -490,14 +478,14 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 ;; Dictionary server stuff
 ;; http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary
-(require 'sdcv-mode)
-(global-set-key (kbd "C-c d") 'sdcv-search)
+(use-package sdcv
+  :config 
+  (global-set-key (kbd "C-c d") 'sdcv-search))
 
 ;; Sunrise/Sunset stuff
-(use-package solar
-  :config 
-  (setq calendar-location-name "Warborough, Oxfordshire")
-  (setq calendar-latitude 51.6 calendar-longitude 1.1)) 
+(require  'solar)
+(setq calendar-location-name "Warborough, Oxfordshire")
+(setq calendar-latitude 51.6 calendar-longitude 1.1)
 
 
 (use-package browse-kill-ring
@@ -595,8 +583,9 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 
 ;;; popwin.el from git@github.com:m2ym/popwin-el.git
-(require 'popwin)
-(popwin-mode 1)
+(use-package  popwin
+  :config
+  (popwin-mode 1))
 
 
 
@@ -660,15 +649,6 @@ With prefix P, create local abbrev. Otherwise it will be global."
       (let ((k (format "%s%s-%s" prefix type n)))
         (define-key disable-mouse-mode-map
           (vector (intern k)) #'ignore)))))
-
-;;;; Pexip MCU functionality
-
-(require 'pexip)
-(defconst pexip-production "10.47.2.49"
-  "Address of management node of production MCU")
-; (global-set-key "\C-cp" (lambda ()(interactive) (pex-insert-version pexip-production)))
-
-
 
 
 ;;; Keymap stuff heavily inspired by http://endlessparentheses.com/the-toggle-map-and-wizardry.html
@@ -824,13 +804,15 @@ otherwise run gnus to create such a buffer."
      (add-hook 'eshell-mode-hook 'grc-eshell-keys )))
 
 
-
+(require 'pcomplete)
 
 ;; eshell completion:
-(require 'pcmpl-git)
-(require 'pcmpl-lein)
-(require 'pcmpl-unix)
-(require 'pcmpl-gnu)
+(require 'pcmpl-git nil t)
+(require 'pcmpl-gnu nil t)
+
+(require 'pcmpl-lein nil t)
+(require 'pcmpl-unix nil t)
+
 
 ;; Add bookmark support to eshell
 (defun pcomplete/eshell-mode/bmk ()
@@ -884,19 +866,10 @@ Completion is available."))
                 "sp-config"
                  ))
 
-
-
-
 (dolist (config configs)
   (message (format "loading %s" config))
-  (load (format "%s/%s" config-dir config)))
+  (load (format "%s/%s" config-dir config)) 
 
-
-
-
-
-
-  
 ;;; Move customisations to their own file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)

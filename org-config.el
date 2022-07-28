@@ -13,9 +13,9 @@
 
 (setq use-package-verbose t)
 
-(use-package org-mode
-  :init
-  (add-hook 'message-mode-hook 'turn-on-orgtbl)
+(use-package org
+ 
+ 
   
   :bind
   (("\C-ca" . org-agenda)
@@ -24,9 +24,7 @@
    ("\C-cc" . org-capture))
   
   :config
-  (setq 
-        org-src-window-setup ‘current-window)
-  
+    
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -140,25 +138,23 @@
       :components ("jj-org-files" "jj-css" "jj-images" "jj-htaccess"))))
   (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))))
 
-:mode "\\.org\\'"
+;; (use-package ox-beamer
+;;   :after org-mode)
 
-(use-package ox-beamer
-  :after org-mode)
-
-(use-package org-protocol)
-(use-package helm-org-rifle
-  :ensure t)
+;; (use-package org-protocol)
+;; (use-package helm-org-rifle
+;;   :ensure t)
 
 
-(use-package org-gcal
-  :after org-mode
-  :config
-  (setq org-gcal-client-id (first (netrc-credentials "gcal"))
-        org-gcal-client-secret (second (netrc-credentials "gcal"))
-        org-gcal-file-alist '(("giles@pexip.com" .  "~/org/schedule.org")))
-  ;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
-  ;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
-  )
+;; (use-package org-gcal
+;;   :after org-mode
+;;   :config
+;;   (setq org-gcal-client-id (first (netrc-credentials "gcal"))
+;;         org-gcal-client-secret (second (netrc-credentials "gcal"))
+;;         org-gcal-file-alist '(("giles@pexip.com" .  "~/org/schedule.org")))
+;;   ;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+;;   ;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+;;   )
 
 ;; (defun grc-org-update-calendar ()
 ;;        (interactive)
@@ -182,8 +178,8 @@
 
 ;; The jujutsu org exporter is kept out of the normal elisp tree and
 ;; can be found iin the jujutsu web site directory structure.
-                                        
-(require 'ox-jujutsu-site)
+                                        ; 
+(require 'ox-jujutsu-site nil t)
 
 (setq org-publish-project-alist
       '(("jj-org-files"
@@ -232,19 +228,25 @@
 ;;; Org Latex Export
 
 ;; Allow line breaks in URLs
-(add-to-list 'org-latex-default-packages-alist "\\PassOptionsToPackage{hyphens}{url}")
+;(add-to-list 'org-latex-default-packages-alist "\\PassOptionsToPackage{hyphens}{url}")
 
 
 (setq org-latex-hyperref-template nil)
 
 
 
-;; Keep bibliography and zettelkasten on one computer
+;; Keep bibliography, zettelkasten and basic org directory on Kakapo
 (if (string= system-name "kakapo")
-    (setq grc-brain-dir "~/study/brain"
-          grc-bibliography "~/study/bibliography/references.bib"
-          grc-bib-notes "~/study/bibliography/notes"
-          grc-bib-search-dirs "~/study/bibliography"))
+    (setq grc-kakapo-home "~/")
+  (setq grc-kakapo-home    "/System/Volumes/Data/mnt/Resources/grc-kakapo/"))
+
+
+;; These are all relative to grc-kakapo-home
+(setq grc-brain-dir "study/brain"
+      grc-bibliography-dir "study/bibliography/"
+      grc-bibliography-file "references.bib"
+      grc-bib-notes "study/bibliography/notes"
+      grc-bib-search-dirs '((concat grc-kakapo-home grc-bibliography-dir)))
 
 ;; org-roam
 (use-package org-roam
@@ -256,7 +258,7 @@
   (setq org-roam-v2-ack t)
 
   :custom
-  (org-roam-directory grc-brain-dir)
+  (org-roam-directory (concat grc-kakapo-home grc-brain-dir))
 
   :bind
   ("C-c n l" . org-roam-buffer-toggle)
@@ -282,18 +284,16 @@
   
   :config
   (setq ebib-bibtex-dialect 'biblatex)
-  (setq ebib-notes-directory grc-bib-notes)
-  (setq ebib-bib-search-dirs '("~/study/bibliography"))
-  (setq ebib-preload-bib-files '("~/study/bibliography/references.bib")))
-
-(use-package org-ebib)
+  (setq ebib-notes-directory (concat grc-kakapo-home grc-bib-notes))
+  (setq ebib-bib-search-dirs '((concat grc-kakapo-home grc-bib-search-dirs)))
+  (setq ebib-preload-bib-files '(grc-bibliography-file)))
 
 
 (use-package helm-bibtex
   :ensure t
   :config
-  (setq bibtex-completion-bibliography grc-bibliography)
-  (setq bibtex-completion-notes-path  grc-bib-notes))
+  (setq bibtex-completion-bibliography (concat grc-kakapo-home grc-bibliography-dir grc-bibliography-file))
+  (setq bibtex-completion-notes-path  (concat grc-kakapo-home grc-bib-notes)))
 
 (provide 'org-config)
 

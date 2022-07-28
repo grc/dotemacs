@@ -3,25 +3,21 @@
 ;;;  git://git.savannah.nongnu.org/bbdb.git
 
 
+(use-package bbdb
+  :config
+  (setq bbdb-default-country "UK")
+  (setq bbdb-file "~/.emacs.d/bbdb")
+  (bbdb-initialize 'gnus 'message)
+  (bbdb-mua-auto-update-init 'gnus)
+)
 
-;; You have to run `make install' to generate bbdb-loadefs.  By default that
-;; install to /usr/local/share/emacs/site-lisp
 
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
-(require 'bbdb-loaddefs)
-(require 'subr-x)
 
-(bbdb-initialize 'gnus 'message)
 
-(bbdb-mua-auto-update-init)
-
-(setq bbdb-default-country "UK")
-
-(setq bbdb-file "~/.emacs.d/bbdb")           
-
+(require 'subr-x) ; string-join
 
 ;;; Extracting info from BBDB for form letters etc
-;;; use the textmerg package and the following LaTeX invocation:
+;;; use the textmerge package and the following LaTeX invocation:
 ;;;
 ;; \Fields{\firstname\surname-\address}
 ;; \Merge{people.dat}{%
